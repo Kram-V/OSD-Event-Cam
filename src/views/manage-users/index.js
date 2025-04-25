@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import {
   CTable,
   CTableRow,
@@ -26,19 +26,20 @@ import {
   cilArrowRight,
   cilBan,
   cilCheckCircle,
-  cilFilter,
   cilLockLocked,
-  cilPencil,
   cilPlus,
-  cilSearch,
+  cilShieldAlt,
+  cilThumbDown,
+  cilThumbUp,
   cilUser,
 } from '@coreui/icons'
 
 import { generate } from 'generate-password-browser'
+import { getAllUsers } from '../../http/auth'
 
 const ManageUsers = () => {
+  const [allUsers, setAllUsers] = useState([])
   const [isModalOpen, setIsModalOpen] = useState(false)
-  const [isEditModalOpen, setIsEditModalOpen] = useState(false)
   const [fullname, setFullname] = useState('')
   const [username, setUsername] = useState('')
   const [email, setEmail] = useState('')
@@ -64,9 +65,17 @@ const ManageUsers = () => {
     setIsModalOpen(false)
   }
 
-  const handleResetEditModal = () => {
-    setIsEditModalOpen(false)
+  const getUsers = () => {
+    getAllUsers()
+      .then((res) => {
+        setAllUsers(res.data.data)
+      })
+      .catch((e) => console.log(e))
   }
+
+  useEffect(() => {
+    getUsers()
+  }, [])
 
   return (
     <div>
@@ -90,70 +99,69 @@ const ManageUsers = () => {
             <CTableHeaderCell scope="col">Username</CTableHeaderCell>
             <CTableHeaderCell scope="col">Role</CTableHeaderCell>
             <CTableHeaderCell scope="col">Status</CTableHeaderCell>
-            <CTableHeaderCell scope="col">Verification Status</CTableHeaderCell>
             <CTableHeaderCell scope="col">Approval Status</CTableHeaderCell>
+            <CTableHeaderCell scope="col">Verification Status</CTableHeaderCell>
             <CTableHeaderCell scope="col">Actions</CTableHeaderCell>
           </CTableRow>
         </CTableHead>
-        <CTableBody>
-          <CTableRow>
-            <CTableDataCell>janedoe@gmail.com</CTableDataCell>
-            <CTableDataCell>janedoe30</CTableDataCell>
-            <CTableDataCell>Admin</CTableDataCell>
-            <CTableDataCell>
-              <CBadge color="success">Active</CBadge>
-            </CTableDataCell>
-            <CTableDataCell>
-              <CBadge color="success">Verified</CBadge>
-            </CTableDataCell>
-            <CTableDataCell>
-              <CBadge color="success">Approved</CBadge>
-            </CTableDataCell>
-            <CTableDataCell>
-              <CTooltip content="Edit Role" placement="top">
-                <CIcon
-                  onClick={() => setIsEditModalOpen(true)}
-                  icon={cilPencil}
-                  className="me-2 text-secondary"
-                  role="button"
-                  title="Edit"
-                />
-              </CTooltip>
-              <CTooltip content="Deactivate" placement="top">
-                <CIcon icon={cilBan} role="button" className="text-secondary" />
-              </CTooltip>
-            </CTableDataCell>
-          </CTableRow>
 
-          <CTableRow>
-            <CTableDataCell>johndoe@gmail.com</CTableDataCell>
-            <CTableDataCell>johndoe12</CTableDataCell>
-            <CTableDataCell>Staff</CTableDataCell>
-            <CTableDataCell>
-              <CBadge color="danger">Inactive</CBadge>
-            </CTableDataCell>
-            <CTableDataCell>
-              <CBadge color="warning">Pending</CBadge>
-            </CTableDataCell>
-            <CTableDataCell>
-              <CBadge color="warning">Pending</CBadge>
-            </CTableDataCell>
-            <CTableDataCell>
-              <CTooltip content="Edit Role" placement="top">
-                <CIcon
-                  onClick={() => setIsEditModalOpen(true)}
-                  icon={cilPencil}
-                  className="me-2 text-secondary"
-                  role="button"
-                  title="Edit"
-                />
-              </CTooltip>
-              <CTooltip content="Activate" placement="top">
-                <CIcon icon={cilCheckCircle} role="button" className="text-secondary" />
-              </CTooltip>
-            </CTableDataCell>
-          </CTableRow>
-        </CTableBody>
+        {allUsers.map((user) => {
+          return (
+            <CTableBody>
+              <CTableRow>
+                <CTableDataCell>{user.email}</CTableDataCell>
+                <CTableDataCell>{user.username}</CTableDataCell>
+                <CTableDataCell>{user.role === 'admin' ? 'Admin' : 'Staff'}</CTableDataCell>
+                <CTableDataCell>
+                  <CBadge color={user.is_active === 1 ? 'success' : 'danger'}>
+                    {user.is_active === 1 ? 'Active' : 'Inactive'}
+                  </CBadge>
+                </CTableDataCell>
+                <CTableDataCell>
+                  <CBadge color={user.is_approved === 1 ? 'success' : 'warning'}>
+                    {user.is_approved === 1 ? 'Approved' : 'Pending'}
+                  </CBadge>
+                </CTableDataCell>
+                <CTableDataCell>
+                  <CBadge color={user.is_verified === 1 ? 'success' : 'warning'}>
+                    {user.is_verified === 1 ? 'Verified' : 'Pending'}
+                  </CBadge>
+                </CTableDataCell>
+                <CTableDataCell>
+                  {user.is_active ? (
+                    <CTooltip content="Deactivate" placement="top">
+                      <CIcon icon={cilBan} role="button" className="text-secondary me-2 " />
+                    </CTooltip>
+                  ) : (
+                    <CTooltip content="Activate" placement="top">
+                      <CIcon icon={cilCheckCircle} role="button" className="text-secondary me-2 " />
+                    </CTooltip>
+                  )}
+
+                  {user.is_approved ? (
+                    <CTooltip content="Disapprove" placement="top">
+                      <CIcon icon={cilThumbDown} className="me-2 text-secondary" role="button" />
+                    </CTooltip>
+                  ) : (
+                    <CTooltip content="Approve" placement="top">
+                      <CIcon icon={cilThumbUp} className="me-2 text-secondary" role="button" />
+                    </CTooltip>
+                  )}
+
+                  {user.role === 'admin' ? (
+                    <CTooltip content="Make as Staff" placement="top">
+                      <CIcon icon={cilUser} className="text-secondary" role="button" />
+                    </CTooltip>
+                  ) : (
+                    <CTooltip content="Make as Admin" placement="top">
+                      <CIcon icon={cilShieldAlt} className="text-secondary" role="button" />
+                    </CTooltip>
+                  )}
+                </CTableDataCell>
+              </CTableRow>
+            </CTableBody>
+          )
+        })}
       </CTable>
 
       <div className="d-flex justify-content-between align-items-center">
@@ -267,7 +275,7 @@ const ManageUsers = () => {
       </CModal>
 
       {/* EDIT MODAL */}
-      <CModal
+      {/* <CModal
         backdrop="static"
         alignment="center"
         scrollable
@@ -290,7 +298,7 @@ const ManageUsers = () => {
           </CButton>
           <CButton color="primary">Save changes</CButton>
         </CModalFooter>
-      </CModal>
+      </CModal> */}
     </div>
   )
 }
