@@ -19,6 +19,7 @@ import {
   CForm,
   CInputGroup,
   CInputGroupText,
+  CSpinner,
 } from '@coreui/react'
 import CIcon from '@coreui/icons-react'
 import {
@@ -39,6 +40,7 @@ import {
   activateAccount,
   approveUser,
   changeRole,
+  createUser,
   deactivateAccount,
   disapproveUser,
   getAllUsers,
@@ -53,6 +55,9 @@ const ManageUsers = () => {
   const [username, setUsername] = useState('')
   const [email, setEmail] = useState('')
   const [generatedPassword, setGeneratedPassword] = useState('')
+
+  const [isLoading, setIsLoading] = useState(false)
+  const [errors, setErrors] = useState(null)
 
   const handleGeneratePassword = (length = 12) => {
     const password = generate({
@@ -74,10 +79,44 @@ const ManageUsers = () => {
     setIsModalOpen(false)
   }
 
+  const handleCreateUser = () => {
+    setIsLoading(true)
+
+    const data = {
+      fullname,
+      username,
+      email,
+      password: generatedPassword,
+    }
+
+    createUser(data)
+      .then((res) => {
+        toast.success('You have created account successfully', {
+          position: 'top-right',
+          autoClose: 4000,
+          hideProgressBar: false,
+          closeOnClick: false,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: 'light',
+          transition: Bounce,
+        })
+
+        getUsers()
+        handleReset()
+        setErrors(null)
+      })
+      .catch((e) => {
+        setErrors(null)
+        setErrors(e.response.data.errors)
+      })
+      .finally(() => setIsLoading(false))
+  }
+
   const getUsers = () => {
     getAllUsers()
       .then((res) => {
-        console.log(res)
         setAllUsers(res.data.data)
       })
       .catch((e) => console.log(e))
@@ -186,8 +225,6 @@ const ManageUsers = () => {
   useEffect(() => {
     getUsers()
   }, [])
-
-  console.log(allUsers)
 
   return (
     <div>
@@ -354,65 +391,90 @@ const ManageUsers = () => {
         </CModalHeader>
         <CModalBody>
           <CForm>
-            <CInputGroup className="mb-3">
-              <CInputGroupText>
-                <CIcon icon={cilUser} />
-              </CInputGroupText>
-              <CFormInput
-                placeholder="Fullname"
-                autoComplete="fullname"
-                value={fullname}
-                onChange={(e) => setFullname(e.target.value)}
-              />
-            </CInputGroup>
-
-            <CInputGroup className="mb-3">
-              <CInputGroupText>
-                <CIcon icon={cilUser} />
-              </CInputGroupText>
-              <CFormInput
-                placeholder="Username"
-                autoComplete="username"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-              />
-            </CInputGroup>
-            <CInputGroup className="mb-3">
-              <CInputGroupText>@</CInputGroupText>
-              <CFormInput
-                placeholder="Email"
-                autoComplete="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-              />
-            </CInputGroup>
-            <CInputGroup className="mb-3 position-relative">
-              <CInputGroupText>
-                <CIcon icon={cilLockLocked} />
-              </CInputGroupText>
-              <CFormInput
-                placeholder="Password"
-                autoComplete="new-password"
-                value={generatedPassword}
-                onChange={(e) => setGeneratedPassword(e.target.value)}
-              />
-
-              <CTooltip content="Generate Password" placement="top">
-                <CIcon
-                  onClick={() => handleGeneratePassword()}
-                  className="position-absolute"
-                  style={{ right: '10px', top: '10px', cursor: 'pointer' }}
-                  icon={cilLockLocked}
+            <div className="mb-3">
+              <CInputGroup>
+                <CInputGroupText>
+                  <CIcon icon={cilUser} />
+                </CInputGroupText>
+                <CFormInput
+                  placeholder="Fullname"
+                  autoComplete="fullname"
+                  value={fullname}
+                  onChange={(e) => setFullname(e.target.value)}
                 />
-              </CTooltip>
-            </CInputGroup>
+              </CInputGroup>
+              <div style={{ color: 'red', fontSize: '14px' }}>
+                {errors && errors['fullname'] && errors['fullname'][0]}
+              </div>
+            </div>
+
+            <div className="mb-3">
+              <CInputGroup>
+                <CInputGroupText>
+                  <CIcon icon={cilUser} />
+                </CInputGroupText>
+                <CFormInput
+                  placeholder="Username"
+                  autoComplete="username"
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
+                />
+              </CInputGroup>
+              <div style={{ color: 'red', fontSize: '14px' }}>
+                {errors && errors['username'] && errors['username'][0]}
+              </div>
+            </div>
+
+            <div className="mb-3">
+              <CInputGroup>
+                <CInputGroupText>@</CInputGroupText>
+                <CFormInput
+                  placeholder="Email"
+                  autoComplete="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                />
+              </CInputGroup>
+              <div style={{ color: 'red', fontSize: '14px' }}>
+                {errors && errors['email'] && errors['email'][0]}
+              </div>
+            </div>
+
+            <div className="mb-3">
+              <CInputGroup className=" position-relative">
+                <CInputGroupText>
+                  <CIcon icon={cilLockLocked} />
+                </CInputGroupText>
+                <CFormInput
+                  placeholder="Password"
+                  autoComplete="new-password"
+                  value={generatedPassword}
+                  onChange={(e) => setGeneratedPassword(e.target.value)}
+                />
+
+                <CTooltip content="Generate Password" placement="top">
+                  <CIcon
+                    onClick={() => handleGeneratePassword()}
+                    className="position-absolute"
+                    style={{ right: '10px', top: '10px', cursor: 'pointer' }}
+                    icon={cilLockLocked}
+                  />
+                </CTooltip>
+              </CInputGroup>
+
+              <div style={{ color: 'red', fontSize: '14px' }}>
+                {errors && errors['password'] && errors['password'][0]}
+              </div>
+            </div>
           </CForm>
         </CModalBody>
         <CModalFooter>
           <CButton color="secondary" onClick={handleReset}>
             Close
           </CButton>
-          <CButton color="primary">Save changes</CButton>
+          <CButton disabled={isLoading} onClick={handleCreateUser} color="primary">
+            {isLoading ? <CSpinner style={{ width: '20px', height: '20px' }} /> : 'Save Changes'}
+          </CButton>
         </CModalFooter>
       </CModal>
 

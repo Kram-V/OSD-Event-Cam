@@ -62,6 +62,22 @@ const Login = () => {
 
         if (
           e.response.data.message ===
+          'Your account is not active currently, please contact your admin.'
+        )
+          return toast.error(e.response.data.message, {
+            position: 'top-right',
+            autoClose: 6000,
+            hideProgressBar: false,
+            closeOnClick: false,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: 'light',
+            transition: Bounce,
+          })
+
+        if (
+          e.response.data.message ===
           'Your account is not approved by an admin, please contact your admin.'
         )
           return toast.error(e.response.data.message, {
