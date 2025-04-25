@@ -1,5 +1,5 @@
-import React from 'react'
-import { Link } from 'react-router-dom'
+import React, { useState } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
 import {
   CButton,
   CCard,
@@ -15,7 +15,29 @@ import {
 import CIcon from '@coreui/icons-react'
 import { cilLockLocked, cilUser } from '@coreui/icons'
 
+import { login } from '../../../http/auth'
+import { useUserDetailsContext } from '../../../contexts/UserDetailsContext'
+
 const Login = () => {
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+
+  const { getUserDetails } = useUserDetailsContext()
+
+  const navigate = useNavigate()
+
+  const handleSubmit = (e) => {
+    e.preventDefault()
+
+    login({ email, password })
+      .then((res) => {
+        getUserDetails(res.data.user, res.data.token)
+        // window.location.reload('/dashboard')
+        navigate('/dashboard')
+      })
+      .catch((e) => console.log(e))
+  }
+
   return (
     <div className="bg-body-tertiary min-vh-100 d-flex flex-row align-items-center">
       <CContainer>
@@ -23,7 +45,7 @@ const Login = () => {
           <CCol md={4}>
             <CCard className="p-4">
               <CCardBody>
-                <CForm>
+                <CForm onSubmit={handleSubmit}>
                   <div className="text-center">
                     <h1>Login</h1>
                     <p className="text-body-secondary">Sign In to your account</p>
@@ -32,13 +54,20 @@ const Login = () => {
                     <CInputGroupText>
                       <CIcon icon={cilUser} />
                     </CInputGroupText>
-                    <CFormInput placeholder="Username" autoComplete="username" />
+                    <CFormInput
+                      placeholder="Email"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      autoComplete="email"
+                    />
                   </CInputGroup>
                   <CInputGroup className="mb-2">
                     <CInputGroupText>
                       <CIcon icon={cilLockLocked} />
                     </CInputGroupText>
                     <CFormInput
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
                       type="password"
                       placeholder="Password"
                       autoComplete="current-password"
@@ -53,11 +82,9 @@ const Login = () => {
 
                   <CRow className="align-items-center">
                     <CCol xs={6}>
-                      <Link to="/dashboard">
-                        <CButton color="primary" className="px-4">
-                          Login
-                        </CButton>
-                      </Link>
+                      <CButton type="submit" color="primary" className="px-4">
+                        Login
+                      </CButton>
                     </CCol>
                     <CCol xs={6}>
                       No Account? <Link to="/register">Sign Up</Link>

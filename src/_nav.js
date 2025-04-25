@@ -41,12 +41,6 @@ const _nav = [
     to: '/help',
     icon: <CIcon icon={cilInfo} customClassName="nav-icon" />,
   },
-  {
-    component: CNavItem,
-    name: 'Logout',
-    to: '/login',
-    icon: <CIcon icon={cilArrowThickToRight} customClassName="nav-icon" />,
-  },
 ]
 
 export default _nav

@@ -1,9 +1,7 @@
 import React from 'react'
 import {
   CAvatar,
-  CBadge,
   CDropdown,
-  CDropdownDivider,
   CDropdownHeader,
   CDropdownItem,
   CDropdownMenu,
@@ -13,9 +11,25 @@ import { cilArrowThickToRight, cilUser } from '@coreui/icons'
 import CIcon from '@coreui/icons-react'
 
 import avatarDefault from './../../assets/images/avatars/default.png'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
+import { logout } from '../../http/auth'
+import { useUserDetailsContext } from '../../contexts/UserDetailsContext'
 
 const AppHeaderDropdown = () => {
+  const { removeUserDetails } = useUserDetailsContext()
+
+  const navigate = useNavigate()
+
+  const handleLogout = () => {
+    logout()
+      .then((res) => {
+        removeUserDetails()
+
+        // window.location.reload('/login')
+        navigate('/login')
+      })
+      .catch((e) => console.log(e))
+  }
   return (
     <CDropdown variant="nav-item">
       <CDropdownToggle placement="bottom-end" className="py-0 pe-0" caret={false}>
@@ -29,7 +43,7 @@ const AppHeaderDropdown = () => {
           Profile
         </CDropdownItem>
 
-        <Link to="/login" className="dropdown-item d-flex align-items-center">
+        <Link onClick={handleLogout} className="dropdown-item d-flex align-items-center">
           <CIcon icon={cilArrowThickToRight} className="me-2" />
           Logout
         </Link>

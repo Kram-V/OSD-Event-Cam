@@ -39,6 +39,7 @@ import { generate } from 'generate-password-browser'
 const ManageUsers = () => {
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [isEditModalOpen, setIsEditModalOpen] = useState(false)
+  const [fullname, setFullname] = useState('')
   const [username, setUsername] = useState('')
   const [email, setEmail] = useState('')
   const [generatedPassword, setGeneratedPassword] = useState('')
@@ -56,6 +57,7 @@ const ManageUsers = () => {
   }
 
   const handleReset = () => {
+    setFullname('')
     setUsername('')
     setEmail('')
     setGeneratedPassword('')
@@ -202,6 +204,18 @@ const ManageUsers = () => {
         </CModalHeader>
         <CModalBody>
           <CForm>
+            <CInputGroup className="mb-3">
+              <CInputGroupText>
+                <CIcon icon={cilUser} />
+              </CInputGroupText>
+              <CFormInput
+                placeholder="Fullname"
+                autoComplete="fullname"
+                value={fullname}
+                onChange={(e) => setFullname(e.target.value)}
+              />
+            </CInputGroup>
+
             <CInputGroup className="mb-3">
               <CInputGroupText>
                 <CIcon icon={cilUser} />
