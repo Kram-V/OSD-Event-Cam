@@ -1,7 +1,5 @@
 import api from './api'
 
-export const getAllUsers = () => api.get('api/get-users')
-
 export const login = (credentials) => api.post('api/login', credentials)
 
 export const register = (data) => api.post('api/register', data)

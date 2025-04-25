@@ -35,7 +35,16 @@ import {
 } from '@coreui/icons'
 
 import { generate } from 'generate-password-browser'
-import { getAllUsers } from '../../http/auth'
+import {
+  activateAccount,
+  approveUser,
+  changeRole,
+  deactivateAccount,
+  disapproveUser,
+  getAllUsers,
+} from '../../http/admin'
+
+import { Bounce, ToastContainer, toast } from 'react-toastify'
 
 const ManageUsers = () => {
   const [allUsers, setAllUsers] = useState([])
@@ -68,7 +77,108 @@ const ManageUsers = () => {
   const getUsers = () => {
     getAllUsers()
       .then((res) => {
+        console.log(res)
         setAllUsers(res.data.data)
+      })
+      .catch((e) => console.log(e))
+  }
+
+  const handleDeactivateAccount = (id) => {
+    deactivateAccount(id)
+      .then((res) => {
+        toast.success('You have deactivated account successfully', {
+          position: 'top-right',
+          autoClose: 4000,
+          hideProgressBar: false,
+          closeOnClick: false,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: 'light',
+          transition: Bounce,
+        })
+
+        getUsers()
+      })
+      .catch((e) => console.log(e))
+  }
+
+  const handleActivateAccount = (id) => {
+    activateAccount(id)
+      .then((res) => {
+        toast.success('You have activated account successfully', {
+          position: 'top-right',
+          autoClose: 4000,
+          hideProgressBar: false,
+          closeOnClick: false,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: 'light',
+          transition: Bounce,
+        })
+
+        getUsers()
+      })
+      .catch((e) => console.log(e))
+  }
+
+  const handleDisapproveUser = (id) => {
+    disapproveUser(id)
+      .then((res) => {
+        toast.success('You have disapproved user successfully', {
+          position: 'top-right',
+          autoClose: 4000,
+          hideProgressBar: false,
+          closeOnClick: false,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: 'light',
+          transition: Bounce,
+        })
+
+        getUsers()
+      })
+      .catch((e) => console.log(e))
+  }
+
+  const handleApproveUser = (id) => {
+    approveUser(id)
+      .then((res) => {
+        toast.success('You have disapproved user successfully', {
+          position: 'top-right',
+          autoClose: 4000,
+          hideProgressBar: false,
+          closeOnClick: false,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: 'light',
+          transition: Bounce,
+        })
+
+        getUsers()
+      })
+      .catch((e) => console.log(e))
+  }
+
+  const handleChangeRole = (id, data) => {
+    changeRole(id, data)
+      .then((res) => {
+        toast.success('You have changed role successfully', {
+          position: 'top-right',
+          autoClose: 4000,
+          hideProgressBar: false,
+          closeOnClick: false,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: 'light',
+          transition: Bounce,
+        })
+
+        getUsers()
       })
       .catch((e) => console.log(e))
   }
@@ -76,6 +186,8 @@ const ManageUsers = () => {
   useEffect(() => {
     getUsers()
   }, [])
+
+  console.log(allUsers)
 
   return (
     <div>
@@ -107,7 +219,7 @@ const ManageUsers = () => {
 
         {allUsers.map((user) => {
           return (
-            <CTableBody>
+            <CTableBody key={user.id}>
               <CTableRow>
                 <CTableDataCell>{user.email}</CTableDataCell>
                 <CTableDataCell>{user.username}</CTableDataCell>
@@ -130,31 +242,61 @@ const ManageUsers = () => {
                 <CTableDataCell>
                   {user.is_active ? (
                     <CTooltip content="Deactivate" placement="top">
-                      <CIcon icon={cilBan} role="button" className="text-secondary me-2 " />
+                      <CIcon
+                        onClick={() => handleDeactivateAccount(user.id)}
+                        icon={cilBan}
+                        role="button"
+                        className="text-secondary me-2 "
+                      />
                     </CTooltip>
                   ) : (
                     <CTooltip content="Activate" placement="top">
-                      <CIcon icon={cilCheckCircle} role="button" className="text-secondary me-2 " />
+                      <CIcon
+                        onClick={() => handleActivateAccount(user.id)}
+                        icon={cilCheckCircle}
+                        role="button"
+                        className="text-secondary me-2 "
+                      />
                     </CTooltip>
                   )}
 
                   {user.is_approved ? (
                     <CTooltip content="Disapprove" placement="top">
-                      <CIcon icon={cilThumbDown} className="me-2 text-secondary" role="button" />
+                      <CIcon
+                        onClick={() => handleDisapproveUser(user.id)}
+                        icon={cilThumbDown}
+                        className="me-2 text-secondary"
+                        role="button"
+                      />
                     </CTooltip>
                   ) : (
                     <CTooltip content="Approve" placement="top">
-                      <CIcon icon={cilThumbUp} className="me-2 text-secondary" role="button" />
+                      <CIcon
+                        onClick={() => handleApproveUser(user.id)}
+                        icon={cilThumbUp}
+                        className="me-2 text-secondary"
+                        role="button"
+                      />
                     </CTooltip>
                   )}
 
                   {user.role === 'admin' ? (
                     <CTooltip content="Make as Staff" placement="top">
-                      <CIcon icon={cilUser} className="text-secondary" role="button" />
+                      <CIcon
+                        onClick={() => handleChangeRole(user.id, { status: 'staff' })}
+                        icon={cilUser}
+                        className="text-secondary"
+                        role="button"
+                      />
                     </CTooltip>
                   ) : (
                     <CTooltip content="Make as Admin" placement="top">
-                      <CIcon icon={cilShieldAlt} className="text-secondary" role="button" />
+                      <CIcon
+                        onClick={() => handleChangeRole(user.id, { status: 'admin' })}
+                        icon={cilShieldAlt}
+                        className="text-secondary"
+                        role="button"
+                      />
                     </CTooltip>
                   )}
                 </CTableDataCell>
@@ -274,31 +416,7 @@ const ManageUsers = () => {
         </CModalFooter>
       </CModal>
 
-      {/* EDIT MODAL */}
-      {/* <CModal
-        backdrop="static"
-        alignment="center"
-        scrollable
-        visible={isEditModalOpen}
-        onClose={handleResetEditModal}
-        aria-labelledby="VerticallyCenteredScrollableExample2"
-      >
-        <CModalHeader>
-          <CModalTitle id="VerticallyCenteredScrollableExample2">Edit Role</CModalTitle>
-        </CModalHeader>
-        <CModalBody>
-          <CFormSelect>
-            <option value="admin">Admin</option>
-            <option value="staff">Staff</option>
-          </CFormSelect>
-        </CModalBody>
-        <CModalFooter>
-          <CButton color="secondary" onClick={handleResetEditModal}>
-            Close
-          </CButton>
-          <CButton color="primary">Save changes</CButton>
-        </CModalFooter>
-      </CModal> */}
+      <ToastContainer />
     </div>
   )
 }
