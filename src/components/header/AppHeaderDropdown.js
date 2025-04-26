@@ -38,10 +38,10 @@ const AppHeaderDropdown = () => {
       <CDropdownMenu className="pt-0" placement="bottom-end">
         <CDropdownHeader className="bg-body-secondary fw-semibold mb-2">Account</CDropdownHeader>
 
-        <CDropdownItem>
+        <Link to="/user-profile" className="dropdown-item d-flex align-items-center">
           <CIcon icon={cilUser} className="me-2" />
           Profile
-        </CDropdownItem>
+        </Link>
 
         <Link onClick={handleLogout} className="dropdown-item d-flex align-items-center">
           <CIcon icon={cilArrowThickToRight} className="me-2" />

@@ -13,10 +13,14 @@ import CIcon from '@coreui/icons-react'
 import { cilMenu, cilMoon, cilSun } from '@coreui/icons'
 
 import { AppHeaderDropdown } from './header/index'
+import { useUserDetailsContext } from '../contexts/UserDetailsContext'
+import { Link } from 'react-router-dom'
 
 const AppHeader = () => {
   const headerRef = useRef()
   const { colorMode, setColorMode } = useColorModes('coreui-free-react-admin-template-theme')
+
+  const { user } = useUserDetailsContext()
 
   const dispatch = useDispatch()
   const sidebarShow = useSelector((state) => state.sidebarShow)
@@ -39,6 +43,14 @@ const AppHeader = () => {
         </CHeaderToggler>
 
         <CHeaderNav>
+          <CDropdown variant="nav-item" placement="bottom-end">
+            <CDropdownToggle caret={false}>
+              <Link to="/user-profile" style={{ textDecoration: 'none', color: 'gray' }}>
+                {user.username}
+              </Link>
+            </CDropdownToggle>
+          </CDropdown>
+
           <li className="nav-item py-1">
             <div className="vr h-100 mx-2 text-body text-opacity-75"></div>
           </li>
