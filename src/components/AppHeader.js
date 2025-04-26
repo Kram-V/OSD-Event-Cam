@@ -44,10 +44,8 @@ const AppHeader = () => {
 
         <CHeaderNav>
           <CDropdown variant="nav-item" placement="bottom-end">
-            <CDropdownToggle caret={false}>
-              <Link to="/user-profile" style={{ textDecoration: 'none', color: 'gray' }}>
-                {user.username}
-              </Link>
+            <CDropdownToggle style={{ cursor: 'default' }} caret={false}>
+              {user.username}
             </CDropdownToggle>
           </CDropdown>
 

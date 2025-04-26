@@ -77,6 +77,7 @@ const ManageUsers = () => {
     setEmail('')
     setGeneratedPassword('')
     setIsModalOpen(false)
+    setErrors(null)
   }
 
   const handleCreateUser = () => {

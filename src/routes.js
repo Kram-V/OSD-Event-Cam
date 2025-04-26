@@ -7,7 +7,7 @@ const ManageUsers = React.lazy(() => import('./views/manage-users'))
 const UserProfile = React.lazy(() => import('./views/user-profile'))
 const Help = React.lazy(() => import('./views/help'))
 
-const routes = [
+const adminRoutes = [
   { path: '/', exact: true, name: 'Home' },
   { path: '/dashboard', name: 'Dashboard', element: Dashboard },
   { path: '/reports', name: 'Reports', element: Reports },
@@ -17,4 +17,13 @@ const routes = [
   { path: '/help', name: 'Help', element: Help },
 ]
 
-export default routes
+const routes = [
+  { path: '/', exact: true, name: 'Home' },
+  { path: '/dashboard', name: 'Dashboard', element: Dashboard },
+  { path: '/reports', name: 'Reports', element: Reports },
+  { path: '/reports/:id', name: 'Report Details', element: ReportDetails },
+  { path: '/user-profile', name: 'User Profile', element: UserProfile },
+  { path: '/help', name: 'Help', element: Help },
+]
+
+export { routes, adminRoutes }

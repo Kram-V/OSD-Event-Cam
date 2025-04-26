@@ -149,6 +149,7 @@ const UserProfile = () => {
                     placeholder="Fullname"
                     value={fullname}
                     onChange={(e) => setFullname(e.target.value)}
+                    autoComplete="fullname"
                   />
                 </CInputGroup>
 
@@ -166,6 +167,7 @@ const UserProfile = () => {
                     placeholder="Username"
                     value={username}
                     onChange={(e) => setUsername(e.target.value)}
+                    autoComplete="username"
                   />
                 </CInputGroup>
 
@@ -184,6 +186,7 @@ const UserProfile = () => {
                     type="password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
+                    autoComplete="password"
                   />
                 </CInputGroup>
 
@@ -202,6 +205,7 @@ const UserProfile = () => {
                     type="password"
                     value={passwordConfirmation}
                     onChange={(e) => setPasswordConfirmation(e.target.value)}
+                    autoComplete="confirm-password"
                   />
                 </CInputGroup>
               </CCol>

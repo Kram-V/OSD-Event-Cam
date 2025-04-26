@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 
 import {
@@ -17,12 +17,25 @@ import { logo } from 'src/assets/brand/logo'
 import { sygnet } from 'src/assets/brand/sygnet'
 
 // sidebar nav config
-import navigation from '../_nav'
+import { navAdmin, nav } from '../_nav'
+import { useUserDetailsContext } from '../contexts/UserDetailsContext'
 
 const AppSidebar = () => {
   const dispatch = useDispatch()
   const unfoldable = useSelector((state) => state.sidebarUnfoldable)
   const sidebarShow = useSelector((state) => state.sidebarShow)
+
+  const [navigation, setNavigation] = useState()
+
+  const { user } = useUserDetailsContext()
+
+  useEffect(() => {
+    if (user.role === 'admin') {
+      setNavigation(navAdmin)
+    } else {
+      setNavigation(nav)
+    }
+  }, [user.role])
 
   return (
     <CSidebar
