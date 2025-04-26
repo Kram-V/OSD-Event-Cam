@@ -31,6 +31,10 @@ function UserDetailsProvider({ children }) {
     setToken(userToken)
   }
 
+  const updateUserDetails = (userDetails) => {
+    setUser(userDetails)
+  }
+
   const removeUserDetails = () => {
     setUser(null)
     setToken(null)
@@ -39,7 +43,9 @@ function UserDetailsProvider({ children }) {
   }
 
   return (
-    <UserDetailsContext.Provider value={{ user, token, getUserDetails, removeUserDetails }}>
+    <UserDetailsContext.Provider
+      value={{ user, token, getUserDetails, updateUserDetails, removeUserDetails }}
+    >
       {children}
     </UserDetailsContext.Provider>
   )
