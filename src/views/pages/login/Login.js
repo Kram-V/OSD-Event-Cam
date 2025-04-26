@@ -139,6 +139,11 @@ const Login = () => {
                     errors['email'] &&
                     errors['email'][0] === 'The email field is required.' &&
                     'The email field is required.'}
+
+                  {errors &&
+                    errors['email'] &&
+                    errors['email'][0] === 'The email field must be a valid email address.' &&
+                    'The email field must be a valid email address.'}
                 </div>
               </div>
 
