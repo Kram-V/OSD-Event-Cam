@@ -10,6 +10,7 @@ import DocsLink from './DocsLink'
 import DocsExample from './DocsExample'
 import ProtectedRoute from './ProtectedRoute'
 import GuestRoute from './GuestRoute'
+import Card from './Card'
 
 export {
   AppBreadcrumb,
@@ -24,4 +25,5 @@ export {
   DocsExample,
   ProtectedRoute,
   GuestRoute,
+  Card,
 }
