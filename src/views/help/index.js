@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import {
   CAccordion,
   CAccordionBody,
@@ -20,7 +20,6 @@ import {
   CTabs,
 } from '@coreui/react'
 
-import { Link } from 'react-router-dom'
 import CIcon from '@coreui/icons-react'
 import { cilInfo } from '@coreui/icons'
 
@@ -28,6 +27,16 @@ import { useUserDetailsContext } from '../../contexts/UserDetailsContext'
 
 const Help = () => {
   const { user } = useUserDetailsContext()
+
+  const [fullname, setFullname] = useState(user.fullname)
+  const [email, setEmail] = useState(user.email)
+  const [message, setMessage] = useState('')
+
+  const handleSubmit = (e) => {
+    e.preventDefault()
+
+    console.log('submitteed', message)
+  }
 
   return (
     <>
@@ -179,26 +188,29 @@ const Help = () => {
               <strong>Contact Form</strong> (For Technical Support)
             </CCardHeader>
             <CCardBody>
-              <CForm>
+              <CForm onSubmit={handleSubmit}>
                 <CRow className="gap-4">
                   <CCol xs={12}>
-                    <CFormInput type="text" placeholder="Name" value={user.fullname} disabled />
+                    <CFormInput type="text" placeholder="Name" value={fullname} disabled />
                   </CCol>
 
                   <CCol xs={12}>
-                    <CFormInput type="email" placeholder="Email" value={user.email} disabled />
+                    <CFormInput type="email" placeholder="Email" value={email} disabled />
                   </CCol>
 
                   <CCol xs={12}>
-                    <CFormTextarea placeholder="Enter your message" rows={4} />
+                    <CFormTextarea
+                      placeholder="Enter your message"
+                      rows={4}
+                      value={message}
+                      onChange={(e) => setMessage(e.target.value)}
+                    />
                   </CCol>
 
                   <CCol xs={6}>
-                    <Link to="/dashboard">
-                      <CButton color="primary" className="px-4">
-                        Submit
-                      </CButton>
-                    </Link>
+                    <CButton type="submit" color="primary" className="px-4">
+                      Submit
+                    </CButton>
                   </CCol>
                 </CRow>
               </CForm>
