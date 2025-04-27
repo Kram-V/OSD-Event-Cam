@@ -92,6 +92,19 @@ const Login = () => {
             transition: Bounce,
           })
 
+        if (e.response.data.message === 'Please verify first your email before you login')
+          return toast.error(e.response.data.message, {
+            position: 'top-right',
+            autoClose: 6000,
+            hideProgressBar: false,
+            closeOnClick: false,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: 'light',
+            transition: Bounce,
+          })
+
         if (e.response.data.message === 'The provided credentials are incorrect.')
           return toast.error(e.response.data.message, {
             position: 'top-right',
