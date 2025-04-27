@@ -24,7 +24,11 @@ import { Link } from 'react-router-dom'
 import CIcon from '@coreui/icons-react'
 import { cilInfo } from '@coreui/icons'
 
+import { useUserDetailsContext } from '../../contexts/UserDetailsContext'
+
 const Help = () => {
+  const { user } = useUserDetailsContext()
+
   return (
     <>
       <div className="d-flex align-items-center gap-1">
@@ -178,11 +182,11 @@ const Help = () => {
               <CForm>
                 <CRow className="gap-4">
                   <CCol xs={12}>
-                    <CFormInput type="text" placeholder="Name" />
+                    <CFormInput type="text" placeholder="Name" value={user.fullname} disabled />
                   </CCol>
 
                   <CCol xs={12}>
-                    <CFormInput type="email" placeholder="Email" />
+                    <CFormInput type="email" placeholder="Email" value={user.email} disabled />
                   </CCol>
 
                   <CCol xs={12}>
