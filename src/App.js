@@ -11,6 +11,7 @@ import ForgotPassword from './views/pages/forgot-password/ForgotPassword'
 import ResetPassword from './views/pages/reset-password/ResetPassword'
 import { GuestRoute, ProtectedRoute } from './components'
 import { useUserDetailsContext } from './contexts/UserDetailsContext'
+import { ToastContainer } from 'react-toastify'
 
 // Containers
 const DefaultLayout = React.lazy(() => import('./layout/DefaultLayout'))
@@ -42,41 +43,44 @@ const App = () => {
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
-    <BrowserRouter>
-      <Suspense
-        fallback={
-          <div className="pt-3 text-center">
-            <CSpinner color="primary" variant="grow" />
-          </div>
-        }
-      >
-        <Routes>
-          <Route element={<GuestRoute />}>
-            <Route exact path="/login" name="Login Page" element={<Login />} />
-            <Route exact path="/register" name="Register Page" element={<Register />} />
-            <Route
-              exact
-              path="/forgot-password"
-              name="Forgot Password Page"
-              element={<ForgotPassword />}
-            />
-            <Route
-              exact
-              path="/reset-password/:token/:email"
-              name="Reset Password Page"
-              element={<ResetPassword />}
-            />
-          </Route>
+    <>
+      <ToastContainer />
+      <BrowserRouter>
+        <Suspense
+          fallback={
+            <div className="pt-3 text-center">
+              <CSpinner color="primary" variant="grow" />
+            </div>
+          }
+        >
+          <Routes>
+            <Route element={<GuestRoute />}>
+              <Route exact path="/login" name="Login Page" element={<Login />} />
+              <Route exact path="/register" name="Register Page" element={<Register />} />
+              <Route
+                exact
+                path="/forgot-password"
+                name="Forgot Password Page"
+                element={<ForgotPassword />}
+              />
+              <Route
+                exact
+                path="/reset-password/:token/:email"
+                name="Reset Password Page"
+                element={<ResetPassword />}
+              />
+            </Route>
 
-          <Route element={<ProtectedRoute />}>
-            <Route path="*" element={<DefaultLayout />} />
-          </Route>
+            <Route element={<ProtectedRoute />}>
+              <Route path="*" element={<DefaultLayout />} />
+            </Route>
 
-          {/* <Route exact path="*" name="Page 404" element={<Page404 />} />
+            {/* <Route exact path="*" name="Page 404" element={<Page404 />} />
           <Route exact path="/500" name="Page 500" element={<Page500 />} /> */}
-        </Routes>
-      </Suspense>
-    </BrowserRouter>
+          </Routes>
+        </Suspense>
+      </BrowserRouter>
+    </>
   )
 }
 

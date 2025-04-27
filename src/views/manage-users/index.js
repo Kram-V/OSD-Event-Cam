@@ -46,7 +46,7 @@ import {
   getAllUsers,
 } from '../../http/admin'
 
-import { Bounce, ToastContainer, toast } from 'react-toastify'
+import { Bounce, toast } from 'react-toastify'
 
 const ManageUsers = () => {
   const [allUsers, setAllUsers] = useState([])
@@ -478,8 +478,6 @@ const ManageUsers = () => {
           </CButton>
         </CModalFooter>
       </CModal>
-
-      <ToastContainer />
     </div>
   )
 }

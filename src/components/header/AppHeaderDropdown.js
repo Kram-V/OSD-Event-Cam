@@ -25,7 +25,6 @@ const AppHeaderDropdown = () => {
       .then((res) => {
         removeUserDetails()
 
-        // window.location.reload('/login')
         navigate('/login')
       })
       .catch((e) => console.log(e))

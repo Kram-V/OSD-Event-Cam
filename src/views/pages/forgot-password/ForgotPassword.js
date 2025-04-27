@@ -16,7 +16,7 @@ import {
 import CIcon from '@coreui/icons-react'
 import { cilEnvelopeClosed } from '@coreui/icons'
 
-import { Bounce, ToastContainer, toast } from 'react-toastify'
+import { Bounce, toast } from 'react-toastify'
 import { forgotPassword } from '../../../http/auth'
 
 const ForgotPassword = () => {
@@ -159,8 +159,6 @@ const ForgotPassword = () => {
           </CCardBody>
         </CCard>
       </CContainer>
-
-      <ToastContainer />
     </div>
   )
 }

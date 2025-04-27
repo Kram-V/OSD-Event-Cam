@@ -16,7 +16,7 @@ import CIcon from '@coreui/icons-react'
 import { cilLockLocked, cilUser } from '@coreui/icons'
 
 import { CSpinner } from '@coreui/react'
-import { Bounce, ToastContainer, toast } from 'react-toastify'
+import { Bounce, toast } from 'react-toastify'
 
 import { login } from '../../../http/auth'
 import { useUserDetailsContext } from '../../../contexts/UserDetailsContext'
@@ -58,7 +58,22 @@ const Login = () => {
       })
       .catch((e) => {
         setErrors(null)
-        console.log(e)
+
+        if (
+          e.response.data.message ===
+          'Please make sure your email is verified and approved by admin'
+        )
+          return toast.error(e.response.data.message, {
+            position: 'top-right',
+            autoClose: 6000,
+            hideProgressBar: false,
+            closeOnClick: false,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: 'light',
+            transition: Bounce,
+          })
 
         if (
           e.response.data.message ===
@@ -199,8 +214,6 @@ const Login = () => {
           </CCardBody>
         </CCard>
       </CContainer>
-
-      <ToastContainer />
     </div>
   )
 }

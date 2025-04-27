@@ -14,9 +14,9 @@ import {
   CSpinner,
 } from '@coreui/react'
 import CIcon from '@coreui/icons-react'
-import { cilEnvelopeClosed, cilLockLocked } from '@coreui/icons'
+import { cilLockLocked } from '@coreui/icons'
 
-import { Bounce, ToastContainer, toast } from 'react-toastify'
+import { Bounce, toast } from 'react-toastify'
 import { resetPassword } from '../../../http/auth'
 
 const ResetPassword = () => {
@@ -138,8 +138,6 @@ const ResetPassword = () => {
           </CCardBody>
         </CCard>
       </CContainer>
-
-      <ToastContainer />
     </div>
   )
 }

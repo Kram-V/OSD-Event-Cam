@@ -17,7 +17,7 @@ import { Link } from 'react-router-dom'
 import { register } from '../../../http/auth'
 
 import { CSpinner } from '@coreui/react'
-import { Bounce, ToastContainer, toast } from 'react-toastify'
+import { Bounce, toast } from 'react-toastify'
 
 const Register = () => {
   const [fullname, setFullname] = useState('')
@@ -195,8 +195,6 @@ const Register = () => {
           </CCardBody>
         </CCard>
       </CContainer>
-
-      <ToastContainer />
     </div>
   )
 }

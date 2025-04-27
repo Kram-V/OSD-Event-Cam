@@ -32,7 +32,7 @@ import { CRow, CCol } from '@coreui/react'
 import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 
-import { Bounce, ToastContainer, toast } from 'react-toastify'
+import { Bounce, toast } from 'react-toastify'
 import { updateProfile } from '../../http/profile'
 import { useUserDetailsContext } from '../../contexts/UserDetailsContext'
 
@@ -258,8 +258,6 @@ const UserProfile = () => {
           </CTable>
         </CCardBody>
       </CCard>
-
-      <ToastContainer />
     </div>
   )
 }
