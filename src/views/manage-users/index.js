@@ -30,7 +30,6 @@ import {
   cilLockLocked,
   cilPlus,
   cilShieldAlt,
-  cilThumbDown,
   cilThumbUp,
   cilUser,
 } from '@coreui/icons'
@@ -42,7 +41,6 @@ import {
   changeRole,
   createUser,
   deactivateAccount,
-  disapproveUser,
   getAllUsers,
 } from '../../http/admin'
 
@@ -50,15 +48,30 @@ import { Bounce, toast } from 'react-toastify'
 
 const ManageUsers = () => {
   const [allUsers, setAllUsers] = useState([])
-  const [isModalOpen, setIsModalOpen] = useState(false)
   const [fullname, setFullname] = useState('')
   const [username, setUsername] = useState('')
   const [email, setEmail] = useState('')
   const [generatedPassword, setGeneratedPassword] = useState('')
 
+  const [userId, setUserId] = useState(null)
+  const [status, setStatus] = useState(null)
+
+  const [errors, setErrors] = useState(null)
+
+  // FOR MODAL STATE
+  const [isModalOpen, setIsModalOpen] = useState(false)
+  const [isActivateModal, setIsActivateModal] = useState(false)
+  const [isDeactivateModal, setIsDeactivateModal] = useState(false)
+  const [isApproveModal, setIsApproveModal] = useState(false)
+  const [isChangeRoleModal, setIsChangeRoleModal] = useState(false)
+
+  // FOR LOADER STATE
   const [isLoading, setIsLoading] = useState(false)
   const [isCreateLoading, setIsCreateLoading] = useState(false)
-  const [errors, setErrors] = useState(null)
+  const [isActivateLoading, setIsActivateLoading] = useState(false)
+  const [isDeactivateLoading, setIsDeactivateLoading] = useState(false)
+  const [isApproveLoading, setIsApproveLoading] = useState(false)
+  const [isChangeRoleLoading, setIsChangeRoleLoading] = useState(false)
 
   const handleGeneratePassword = (length = 12) => {
     const password = generate({
@@ -126,28 +139,10 @@ const ManageUsers = () => {
       .finally(() => setIsLoading(false))
   }
 
-  const handleDeactivateAccount = (id) => {
-    deactivateAccount(id)
-      .then((res) => {
-        toast.success('You have deactivated account successfully', {
-          position: 'top-right',
-          autoClose: 4000,
-          hideProgressBar: false,
-          closeOnClick: false,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: 'light',
-          transition: Bounce,
-        })
+  const handleActivateAccount = () => {
+    setIsActivateLoading(true)
 
-        getUsers()
-      })
-      .catch((e) => console.log(e))
-  }
-
-  const handleActivateAccount = (id) => {
-    activateAccount(id)
+    activateAccount(userId)
       .then((res) => {
         toast.success('You have activated account successfully', {
           position: 'top-right',
@@ -161,15 +156,20 @@ const ManageUsers = () => {
           transition: Bounce,
         })
 
+        setUserId(null)
+        setIsActivateModal(false)
         getUsers()
       })
       .catch((e) => console.log(e))
+      .finally(() => setIsActivateLoading(false))
   }
 
-  const handleDisapproveUser = (id) => {
-    disapproveUser(id)
+  const handleDeactivateAccount = () => {
+    setIsDeactivateLoading(true)
+
+    deactivateAccount(userId)
       .then((res) => {
-        toast.success('You have disapproved user successfully', {
+        toast.success('You have deactivated account successfully', {
           position: 'top-right',
           autoClose: 4000,
           hideProgressBar: false,
@@ -181,15 +181,20 @@ const ManageUsers = () => {
           transition: Bounce,
         })
 
+        setUserId(null)
+        setIsDeactivateModal(false)
         getUsers()
       })
       .catch((e) => console.log(e))
+      .finally(() => setIsDeactivateLoading(false))
   }
 
-  const handleApproveUser = (id) => {
-    approveUser(id)
+  const handleApproveUser = () => {
+    setIsApproveLoading(true)
+
+    approveUser(userId)
       .then((res) => {
-        toast.success('You have disapproved user successfully', {
+        toast.success('You have approved user successfully', {
           position: 'top-right',
           autoClose: 4000,
           hideProgressBar: false,
@@ -201,13 +206,18 @@ const ManageUsers = () => {
           transition: Bounce,
         })
 
+        setUserId(null)
+        setIsApproveModal(false)
         getUsers()
       })
       .catch((e) => console.log(e))
+      .finally(() => setIsApproveLoading(false))
   }
 
-  const handleChangeRole = (id, data) => {
-    changeRole(id, data)
+  const handleChangeRole = () => {
+    setIsChangeRoleLoading(true)
+
+    changeRole(userId, status)
       .then((res) => {
         toast.success('You have changed role successfully', {
           position: 'top-right',
@@ -221,16 +231,45 @@ const ManageUsers = () => {
           transition: Bounce,
         })
 
+        setStatus(null)
+        setUserId(null)
+        setIsChangeRoleModal(false)
         getUsers()
       })
       .catch((e) => console.log(e))
+      .finally(() => setIsChangeRoleLoading(false))
+  }
+
+  const openActivateModal = (id) => {
+    setIsActivateModal(true)
+    setUserId(id)
+  }
+
+  const openDeactivateModal = (id) => {
+    setIsDeactivateModal(true)
+    setUserId(id)
+  }
+
+  const openApproveModal = (id) => {
+    setIsApproveModal(true)
+    setUserId(id)
+  }
+
+  const openMakeAdminModal = (id, data) => {
+    setIsChangeRoleModal(true)
+    setStatus(data)
+    setUserId(id)
+  }
+
+  const openMakeStaffModal = (id, data) => {
+    setIsChangeRoleModal(true)
+    setStatus(data)
+    setUserId(id)
   }
 
   useEffect(() => {
     getUsers()
   }, [])
-
-  console.log(isLoading)
 
   return (
     <div>
@@ -288,7 +327,7 @@ const ManageUsers = () => {
                     {user.is_active ? (
                       <CTooltip content="Deactivate" placement="top">
                         <CIcon
-                          onClick={() => handleDeactivateAccount(user.id)}
+                          onClick={() => openDeactivateModal(user.id)}
                           icon={cilBan}
                           role="button"
                           className="text-secondary me-2 "
@@ -297,7 +336,7 @@ const ManageUsers = () => {
                     ) : (
                       <CTooltip content="Activate" placement="top">
                         <CIcon
-                          onClick={() => handleActivateAccount(user.id)}
+                          onClick={() => openActivateModal(user.id)}
                           icon={cilCheckCircle}
                           role="button"
                           className="text-secondary me-2 "
@@ -305,19 +344,10 @@ const ManageUsers = () => {
                       </CTooltip>
                     )}
 
-                    {user.is_approved ? (
-                      <CTooltip content="Disapprove" placement="top">
-                        <CIcon
-                          onClick={() => handleDisapproveUser(user.id)}
-                          icon={cilThumbDown}
-                          className="me-2 text-secondary"
-                          role="button"
-                        />
-                      </CTooltip>
-                    ) : (
+                    {!user.is_approved && (
                       <CTooltip content="Approve" placement="top">
                         <CIcon
-                          onClick={() => handleApproveUser(user.id)}
+                          onClick={() => openApproveModal(user.id)}
                           icon={cilThumbUp}
                           className="me-2 text-secondary"
                           role="button"
@@ -328,7 +358,7 @@ const ManageUsers = () => {
                     {user.role === 'admin' ? (
                       <CTooltip content="Make as Staff" placement="top">
                         <CIcon
-                          onClick={() => handleChangeRole(user.id, { status: 'staff' })}
+                          onClick={() => openMakeStaffModal(user.id, { status: 'staff' })}
                           icon={cilUser}
                           className="text-secondary"
                           role="button"
@@ -337,7 +367,7 @@ const ManageUsers = () => {
                     ) : (
                       <CTooltip content="Make as Admin" placement="top">
                         <CIcon
-                          onClick={() => handleChangeRole(user.id, { status: 'admin' })}
+                          onClick={() => openMakeAdminModal(user.id, { status: 'admin' })}
                           icon={cilShieldAlt}
                           className="text-secondary"
                           role="button"
@@ -500,14 +530,126 @@ const ManageUsers = () => {
           </CForm>
         </CModalBody>
         <CModalFooter>
-          <CButton color="secondary" onClick={handleReset}>
+          <CButton disabled={isCreateLoading} color="secondary" onClick={handleReset}>
             Close
           </CButton>
-          <CButton disabled={isLoading} onClick={handleCreateUser} color="primary">
+          <CButton disabled={isCreateLoading} onClick={handleCreateUser} color="primary">
             {isCreateLoading ? (
               <CSpinner style={{ width: '20px', height: '20px' }} />
             ) : (
               'Save Changes'
+            )}
+          </CButton>
+        </CModalFooter>
+      </CModal>
+
+      {/* ACTIVATE MODAL CONFIRMATION */}
+      <CModal
+        backdrop="static"
+        visible={isActivateModal}
+        onClose={() => setIsActivateModal(false)}
+        aria-labelledby="LiveDemoExampleLabel"
+      >
+        <CModalHeader>
+          <CModalTitle id="LiveDemoExampleLabel">Activate Account</CModalTitle>
+        </CModalHeader>
+        <CModalBody>Are you sure you want to activate this account?</CModalBody>
+        <CModalFooter>
+          <CButton
+            disabled={isActivateLoading}
+            color="secondary"
+            onClick={() => setIsActivateModal(false)}
+          >
+            Close
+          </CButton>
+          <CButton disabled={isActivateLoading} color="primary" onClick={handleActivateAccount}>
+            {isActivateLoading ? (
+              <CSpinner style={{ width: '20px', height: '20px' }} />
+            ) : (
+              'Activate'
+            )}
+          </CButton>
+        </CModalFooter>
+      </CModal>
+
+      {/* DEACTIVATE MODAL CONFIRMATION */}
+      <CModal
+        backdrop="static"
+        visible={isDeactivateModal}
+        onClose={() => setIsDeactivateModal(false)}
+        aria-labelledby="LiveDemoExampleLabel"
+      >
+        <CModalHeader>
+          <CModalTitle id="LiveDemoExampleLabel">Deactivate Account</CModalTitle>
+        </CModalHeader>
+        <CModalBody>Are you sure you want to deactivate this account?</CModalBody>
+        <CModalFooter>
+          <CButton
+            disabled={isDeactivateLoading}
+            color="secondary"
+            onClick={() => setIsDeactivateModal(false)}
+          >
+            Close
+          </CButton>
+          <CButton disabled={isDeactivateLoading} color="primary" onClick={handleDeactivateAccount}>
+            {isDeactivateLoading ? (
+              <CSpinner style={{ width: '20px', height: '20px' }} />
+            ) : (
+              'Deactivate'
+            )}
+          </CButton>
+        </CModalFooter>
+      </CModal>
+
+      {/* APPROVE MODAL CONFIRMATION */}
+      <CModal
+        backdrop="static"
+        visible={isApproveModal}
+        onClose={() => setIsApproveModal(false)}
+        aria-labelledby="LiveDemoExampleLabel"
+      >
+        <CModalHeader>
+          <CModalTitle id="LiveDemoExampleLabel">Approve Account</CModalTitle>
+        </CModalHeader>
+        <CModalBody>Are you sure you want to approve this account?</CModalBody>
+        <CModalFooter>
+          <CButton
+            disabled={isApproveLoading}
+            color="secondary"
+            onClick={() => setIsApproveModal(false)}
+          >
+            Close
+          </CButton>
+          <CButton disabled={isApproveLoading} color="primary" onClick={handleApproveUser}>
+            {isApproveLoading ? <CSpinner style={{ width: '20px', height: '20px' }} /> : 'Approve'}
+          </CButton>
+        </CModalFooter>
+      </CModal>
+
+      {/* CHANGE ROLE MODAL CONFIRMATION */}
+      <CModal
+        backdrop="static"
+        visible={isChangeRoleModal}
+        onClose={() => setIsChangeRoleModal(false)}
+        aria-labelledby="LiveDemoExampleLabel"
+      >
+        <CModalHeader>
+          <CModalTitle id="LiveDemoExampleLabel">Change Role Account</CModalTitle>
+        </CModalHeader>
+        <CModalBody>Are you sure you want to change role this account?</CModalBody>
+        <CModalFooter>
+          <CButton
+            disabled={isChangeRoleLoading}
+            color="secondary"
+            onClick={() => setIsChangeRoleModal(false)}
+          >
+            Close
+          </CButton>
+          <CButton disabled={isChangeRoleLoading} color="primary" onClick={handleChangeRole}>
+            {isChangeRoleLoading ? (
+              <CSpinner style={{ width: '20px', height: '20px' }} />
+            ) : (
+              'Change Role'
             )}
           </CButton>
         </CModalFooter>
