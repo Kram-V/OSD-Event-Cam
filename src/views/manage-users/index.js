@@ -57,6 +57,7 @@ const ManageUsers = () => {
   const [generatedPassword, setGeneratedPassword] = useState('')
 
   const [isLoading, setIsLoading] = useState(false)
+  const [isCreateLoading, setIsCreateLoading] = useState(false)
   const [errors, setErrors] = useState(null)
 
   const handleGeneratePassword = (length = 12) => {
@@ -81,7 +82,7 @@ const ManageUsers = () => {
   }
 
   const handleCreateUser = () => {
-    setIsLoading(true)
+    setIsCreateLoading(true)
 
     const data = {
       fullname,
@@ -112,15 +113,17 @@ const ManageUsers = () => {
         setErrors(null)
         setErrors(e.response.data.errors)
       })
-      .finally(() => setIsLoading(false))
+      .finally(() => setIsCreateLoading(false))
   }
 
   const getUsers = () => {
+    setIsLoading(true)
     getAllUsers()
       .then((res) => {
         setAllUsers(res.data.data)
       })
       .catch((e) => console.log(e))
+      .finally(() => setIsLoading(false))
   }
 
   const handleDeactivateAccount = (id) => {
@@ -227,6 +230,8 @@ const ManageUsers = () => {
     getUsers()
   }, [])
 
+  console.log(isLoading)
+
   return (
     <div>
       <div className="d-flex justify-content-between align-items-center mb-4">
@@ -255,93 +260,117 @@ const ManageUsers = () => {
           </CTableRow>
         </CTableHead>
 
-        {allUsers.map((user) => {
-          return (
-            <CTableBody key={user.id}>
-              <CTableRow>
-                <CTableDataCell>{user.email}</CTableDataCell>
-                <CTableDataCell>{user.username}</CTableDataCell>
-                <CTableDataCell>{user.role === 'admin' ? 'Admin' : 'Staff'}</CTableDataCell>
-                <CTableDataCell>
-                  <CBadge color={user.is_active === 1 ? 'success' : 'danger'}>
-                    {user.is_active === 1 ? 'Active' : 'Inactive'}
-                  </CBadge>
-                </CTableDataCell>
-                <CTableDataCell>
-                  <CBadge color={user.is_approved === 1 ? 'success' : 'warning'}>
-                    {user.is_approved === 1 ? 'Approved' : 'Pending'}
-                  </CBadge>
-                </CTableDataCell>
-                <CTableDataCell>
-                  <CBadge color={user.is_verified === 1 ? 'success' : 'warning'}>
-                    {user.is_verified === 1 ? 'Verified' : 'Pending'}
-                  </CBadge>
-                </CTableDataCell>
-                <CTableDataCell>
-                  {user.is_active ? (
-                    <CTooltip content="Deactivate" placement="top">
-                      <CIcon
-                        onClick={() => handleDeactivateAccount(user.id)}
-                        icon={cilBan}
-                        role="button"
-                        className="text-secondary me-2 "
-                      />
-                    </CTooltip>
-                  ) : (
-                    <CTooltip content="Activate" placement="top">
-                      <CIcon
-                        onClick={() => handleActivateAccount(user.id)}
-                        icon={cilCheckCircle}
-                        role="button"
-                        className="text-secondary me-2 "
-                      />
-                    </CTooltip>
-                  )}
+        {allUsers.length > 0 &&
+          !isLoading &&
+          allUsers.map((user) => {
+            return (
+              <CTableBody key={user.id}>
+                <CTableRow>
+                  <CTableDataCell>{user.email}</CTableDataCell>
+                  <CTableDataCell>{user.username}</CTableDataCell>
+                  <CTableDataCell>{user.role === 'admin' ? 'Admin' : 'Staff'}</CTableDataCell>
+                  <CTableDataCell>
+                    <CBadge color={user.is_active === 1 ? 'success' : 'danger'}>
+                      {user.is_active === 1 ? 'Active' : 'Inactive'}
+                    </CBadge>
+                  </CTableDataCell>
+                  <CTableDataCell>
+                    <CBadge color={user.is_approved === 1 ? 'success' : 'warning'}>
+                      {user.is_approved === 1 ? 'Approved' : 'Pending'}
+                    </CBadge>
+                  </CTableDataCell>
+                  <CTableDataCell>
+                    <CBadge color={user.is_verified === 1 ? 'success' : 'warning'}>
+                      {user.is_verified === 1 ? 'Verified' : 'Pending'}
+                    </CBadge>
+                  </CTableDataCell>
+                  <CTableDataCell>
+                    {user.is_active ? (
+                      <CTooltip content="Deactivate" placement="top">
+                        <CIcon
+                          onClick={() => handleDeactivateAccount(user.id)}
+                          icon={cilBan}
+                          role="button"
+                          className="text-secondary me-2 "
+                        />
+                      </CTooltip>
+                    ) : (
+                      <CTooltip content="Activate" placement="top">
+                        <CIcon
+                          onClick={() => handleActivateAccount(user.id)}
+                          icon={cilCheckCircle}
+                          role="button"
+                          className="text-secondary me-2 "
+                        />
+                      </CTooltip>
+                    )}
 
-                  {user.is_approved ? (
-                    <CTooltip content="Disapprove" placement="top">
-                      <CIcon
-                        onClick={() => handleDisapproveUser(user.id)}
-                        icon={cilThumbDown}
-                        className="me-2 text-secondary"
-                        role="button"
-                      />
-                    </CTooltip>
-                  ) : (
-                    <CTooltip content="Approve" placement="top">
-                      <CIcon
-                        onClick={() => handleApproveUser(user.id)}
-                        icon={cilThumbUp}
-                        className="me-2 text-secondary"
-                        role="button"
-                      />
-                    </CTooltip>
-                  )}
+                    {user.is_approved ? (
+                      <CTooltip content="Disapprove" placement="top">
+                        <CIcon
+                          onClick={() => handleDisapproveUser(user.id)}
+                          icon={cilThumbDown}
+                          className="me-2 text-secondary"
+                          role="button"
+                        />
+                      </CTooltip>
+                    ) : (
+                      <CTooltip content="Approve" placement="top">
+                        <CIcon
+                          onClick={() => handleApproveUser(user.id)}
+                          icon={cilThumbUp}
+                          className="me-2 text-secondary"
+                          role="button"
+                        />
+                      </CTooltip>
+                    )}
 
-                  {user.role === 'admin' ? (
-                    <CTooltip content="Make as Staff" placement="top">
-                      <CIcon
-                        onClick={() => handleChangeRole(user.id, { status: 'staff' })}
-                        icon={cilUser}
-                        className="text-secondary"
-                        role="button"
-                      />
-                    </CTooltip>
-                  ) : (
-                    <CTooltip content="Make as Admin" placement="top">
-                      <CIcon
-                        onClick={() => handleChangeRole(user.id, { status: 'admin' })}
-                        icon={cilShieldAlt}
-                        className="text-secondary"
-                        role="button"
-                      />
-                    </CTooltip>
-                  )}
-                </CTableDataCell>
-              </CTableRow>
-            </CTableBody>
-          )
-        })}
+                    {user.role === 'admin' ? (
+                      <CTooltip content="Make as Staff" placement="top">
+                        <CIcon
+                          onClick={() => handleChangeRole(user.id, { status: 'staff' })}
+                          icon={cilUser}
+                          className="text-secondary"
+                          role="button"
+                        />
+                      </CTooltip>
+                    ) : (
+                      <CTooltip content="Make as Admin" placement="top">
+                        <CIcon
+                          onClick={() => handleChangeRole(user.id, { status: 'admin' })}
+                          icon={cilShieldAlt}
+                          className="text-secondary"
+                          role="button"
+                        />
+                      </CTooltip>
+                    )}
+                  </CTableDataCell>
+                </CTableRow>
+              </CTableBody>
+            )
+          })}
+
+        {allUsers.length === 0 && !isLoading && (
+          <CTableBody>
+            <CTableRow>
+              <CTableDataCell colSpan={8} className="text-center">
+                No data available
+              </CTableDataCell>
+            </CTableRow>
+          </CTableBody>
+        )}
+
+        {isLoading && (
+          <CTableBody>
+            <CTableRow>
+              <CTableDataCell colSpan={8}>
+                <div className="d-flex align-items-center justify-content-center gap-2">
+                  <CSpinner style={{ width: '20px', height: '20px' }} /> Loading Data...
+                </div>
+              </CTableDataCell>
+            </CTableRow>
+          </CTableBody>
+        )}
       </CTable>
 
       <div className="d-flex justify-content-between align-items-center">
@@ -442,7 +471,7 @@ const ManageUsers = () => {
             </div>
 
             <div className="mb-3">
-              <CInputGroup className=" position-relative">
+              <CInputGroup>
                 <CInputGroupText>
                   <CIcon icon={cilLockLocked} />
                 </CInputGroupText>
@@ -452,19 +481,20 @@ const ManageUsers = () => {
                   value={generatedPassword}
                   onChange={(e) => setGeneratedPassword(e.target.value)}
                 />
-
-                <CTooltip content="Generate Password" placement="top">
-                  <CIcon
-                    onClick={() => handleGeneratePassword()}
-                    className="position-absolute"
-                    style={{ right: '10px', top: '10px', cursor: 'pointer' }}
-                    icon={cilLockLocked}
-                  />
-                </CTooltip>
               </CInputGroup>
 
               <div style={{ color: 'red', fontSize: '14px' }}>
                 {errors && errors['password'] && errors['password'][0]}
+              </div>
+
+              <div
+                style={{ cursor: 'pointer' }}
+                className="d-flex align-items-center mt-2 text-primary"
+                onClick={() => handleGeneratePassword()}
+              >
+                <span>Generate Password</span>
+
+                <CIcon icon={cilLockLocked} />
               </div>
             </div>
           </CForm>
@@ -474,7 +504,11 @@ const ManageUsers = () => {
             Close
           </CButton>
           <CButton disabled={isLoading} onClick={handleCreateUser} color="primary">
-            {isLoading ? <CSpinner style={{ width: '20px', height: '20px' }} /> : 'Save Changes'}
+            {isCreateLoading ? (
+              <CSpinner style={{ width: '20px', height: '20px' }} />
+            ) : (
+              'Save Changes'
+            )}
           </CButton>
         </CModalFooter>
       </CModal>
