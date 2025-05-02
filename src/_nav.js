@@ -7,6 +7,7 @@ import {
   cilInfo,
   cilArrowThickToRight,
   cilGroup,
+  cilNotes,
 } from '@coreui/icons'
 import { CNavItem } from '@coreui/react'
 
@@ -22,6 +23,12 @@ const navAdmin = [
     name: 'Reports',
     to: '/reports',
     icon: <CIcon icon={cilFile} customClassName="nav-icon" />,
+  },
+  {
+    component: CNavItem,
+    name: 'Records',
+    to: '/records',
+    icon: <CIcon icon={cilNotes} customClassName="nav-icon" />,
   },
   {
     component: CNavItem,
@@ -55,6 +62,12 @@ const nav = [
     name: 'Reports',
     to: '/reports',
     icon: <CIcon icon={cilFile} customClassName="nav-icon" />,
+  },
+  {
+    component: CNavItem,
+    name: 'Records',
+    to: '/records',
+    icon: <CIcon icon={cilNotes} customClassName="nav-icon" />,
   },
   {
     component: CNavItem,
