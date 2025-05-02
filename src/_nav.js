@@ -8,6 +8,8 @@ import {
   cilArrowThickToRight,
   cilGroup,
   cilNotes,
+  cilTrash,
+  cilHistory,
 } from '@coreui/icons'
 import { CNavItem } from '@coreui/react'
 
@@ -26,8 +28,14 @@ const navAdmin = [
   },
   {
     component: CNavItem,
-    name: 'Records',
-    to: '/records',
+    name: 'Archived Reports',
+    to: '/archived-reports',
+    icon: <CIcon icon={cilHistory} customClassName="nav-icon" />,
+  },
+  {
+    component: CNavItem,
+    name: 'Student Records',
+    to: '/student-records',
     icon: <CIcon icon={cilNotes} customClassName="nav-icon" />,
   },
   {
@@ -65,8 +73,8 @@ const nav = [
   },
   {
     component: CNavItem,
-    name: 'Records',
-    to: '/records',
+    name: 'Student Records',
+    to: '/student-records',
     icon: <CIcon icon={cilNotes} customClassName="nav-icon" />,
   },
   {

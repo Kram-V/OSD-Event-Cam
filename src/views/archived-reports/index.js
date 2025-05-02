@@ -23,7 +23,7 @@ import {
 } from '@coreui/icons'
 import { Link } from 'react-router-dom'
 
-const Reports = () => {
+const ArchivedReports = () => {
   return (
     <div>
       <div className="d-flex justify-content-between align-items-center mb-4">
@@ -71,11 +71,11 @@ const Reports = () => {
         <CTableBody>
           <CTableRow>
             <CTableDataCell>1111111</CTableDataCell>
-            <CTableDataCell>John Doe</CTableDataCell>
+            <CTableDataCell>Mark Anthony Vivar</CTableDataCell>
             <CTableDataCell>Violation Type 1</CTableDataCell>
-            <CTableDataCell>2025-01-20 10:10:10</CTableDataCell>
+            <CTableDataCell>2023-10-20 10:10:10</CTableDataCell>
             <CTableDataCell>
-              <CBadge color="warning">Pending</CBadge>
+              <CBadge color="success">Resolved</CBadge>
             </CTableDataCell>
             <CTableDataCell>
               <CTooltip content="View Details" placement="top">
@@ -89,14 +89,6 @@ const Reports = () => {
                   className="me-2 text-secondary"
                   role="button"
                   title="Edit"
-                />
-              </CTooltip>
-              <CTooltip content="Mark as Resolved" placement="top">
-                <CIcon
-                  icon={cilCheckCircle}
-                  role="button"
-                  title="Mark as Solved"
-                  className="text-secondary"
                 />
               </CTooltip>
             </CTableDataCell>
@@ -104,38 +96,12 @@ const Reports = () => {
 
           <CTableRow>
             <CTableDataCell>2222222</CTableDataCell>
-            <CTableDataCell>Jane Doe</CTableDataCell>
+            <CTableDataCell>Jenny Lucerna</CTableDataCell>
             <CTableDataCell>Violation Type 2</CTableDataCell>
-            <CTableDataCell>2025-03-23 14:30:05</CTableDataCell>
+            <CTableDataCell>2021-05-23 14:30:05</CTableDataCell>
             <CTableDataCell>
               <CBadge color="success">Resolved</CBadge>
             </CTableDataCell>
-            <CTableDataCell>
-              <CTooltip content="View Details" placement="top">
-                <Link to="/reports/1" className="text-secondary">
-                  <CIcon icon={cilSearch} className="me-2" role="button" title="View" />
-                </Link>
-              </CTooltip>
-              <CTooltip content="Edit" placement="top">
-                <CIcon
-                  icon={cilPencil}
-                  className="me-2 text-secondary"
-                  role="button"
-                  title="Edit"
-                />
-              </CTooltip>
-            </CTableDataCell>
-          </CTableRow>
-
-          <CTableRow>
-            <CTableDataCell>3333333</CTableDataCell>
-            <CTableDataCell>Ryan Bang</CTableDataCell>
-            <CTableDataCell>Violation Type 3</CTableDataCell>
-            <CTableDataCell>2025-05-23 14:30:05</CTableDataCell>
-            <CTableDataCell>
-              <CBadge color="success">Resolved</CBadge>
-            </CTableDataCell>
-
             <CTableDataCell>
               <CTooltip content="View Details" placement="top">
                 <Link to="/reports/1" className="text-secondary">
@@ -192,4 +158,4 @@ const Reports = () => {
   )
 }
 
-export default Reports
+export default ArchivedReports
