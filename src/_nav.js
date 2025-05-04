@@ -10,6 +10,7 @@ import {
   cilNotes,
   cilTrash,
   cilHistory,
+  cilBuilding,
 } from '@coreui/icons'
 import { CNavItem } from '@coreui/react'
 
@@ -37,6 +38,12 @@ const navAdmin = [
     name: 'Student Records',
     to: '/student-records',
     icon: <CIcon icon={cilNotes} customClassName="nav-icon" />,
+  },
+  {
+    component: CNavItem,
+    name: 'Departments',
+    to: '/departments',
+    icon: <CIcon icon={cilBuilding} customClassName="nav-icon" />,
   },
   {
     component: CNavItem,
@@ -76,6 +83,12 @@ const nav = [
     name: 'Student Records',
     to: '/student-records',
     icon: <CIcon icon={cilNotes} customClassName="nav-icon" />,
+  },
+  {
+    component: CNavItem,
+    name: 'Departments',
+    to: '/departments',
+    icon: <CIcon icon={cilBuilding} customClassName="nav-icon" />,
   },
   {
     component: CNavItem,

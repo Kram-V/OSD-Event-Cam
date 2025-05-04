@@ -2,6 +2,7 @@ import React from 'react'
 import Records from './views/records'
 import RecordDetails from './views/record-details'
 import ArchivedReports from './views/archived-reports'
+import Departments from './views/departments'
 
 const Dashboard = React.lazy(() => import('./views/dashboard/Dashboard'))
 const Reports = React.lazy(() => import('./views/reports'))
@@ -18,6 +19,7 @@ const adminRoutes = [
   { path: '/archived-reports', name: 'Archived Reports', element: ArchivedReports },
   { path: '/student-records', name: 'Student Records', element: Records },
   { path: '/records/:id', name: 'Record Details', element: RecordDetails },
+  { path: '/departments', name: 'Departments', element: Departments },
   { path: '/manage-users', name: 'Manage Users', element: ManageUsers },
   { path: '/user-profile', name: 'User Profile', element: UserProfile },
   { path: '/help', name: 'Help', element: Help },
@@ -30,6 +32,7 @@ const routes = [
   { path: '/reports/:id', name: 'Report Details', element: ReportDetails },
   { path: '/student-records', name: 'Student Records', element: Records },
   { path: '/records/:id', name: 'Record Details', element: RecordDetails },
+  { path: '/departments', name: 'Departments', element: Departments },
   { path: '/user-profile', name: 'User Profile', element: UserProfile },
   { path: '/help', name: 'Help', element: Help },
 ]
