@@ -34,6 +34,7 @@ import { createDepartment, getAllDepartments, updateDepartment } from '../../htt
 
 import { Bounce, toast } from 'react-toastify'
 import { createProgram, getAllPrograms, updateProgram } from '../../http/programs'
+import BackdropLoader from '../../components/BackdropLoader'
 
 const Departments = () => {
   const [programs, setPrograms] = useState([])
@@ -46,6 +47,7 @@ const Departments = () => {
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [isEditModalOpen, setIsEditModalOpen] = useState(false)
 
+  const [isLoading, setIsLoading] = useState(false)
   const [isCreateLoading, setIsCreateLoading] = useState(false)
   const [isEditLoading, setIsEditLoading] = useState(false)
 
@@ -113,11 +115,14 @@ const Departments = () => {
   }
 
   const getPrograms = () => {
+    setIsLoading(true)
+
     getAllPrograms()
       .then((res) => {
         setPrograms(res.data.programs)
       })
       .catch((e) => console.log(e))
+      .finally(() => setIsLoading(false))
   }
 
   const getDepartments = () => {
@@ -183,26 +188,50 @@ const Departments = () => {
           </CTableRow>
         </CTableHead>
         <CTableBody>
-          {programs.map((program, i) => (
-            <CTableRow key={i}>
-              <CTableDataCell>{program.department.name}</CTableDataCell>
-              <CTableDataCell>{program.name}</CTableDataCell>
-              {/* <CTableDataCell>{program.code ? program.code : 'N/A'}</CTableDataCell>
+          {programs.length > 0 &&
+            !isLoading &&
+            programs.map((program, i) => (
+              <CTableRow key={i}>
+                <CTableDataCell>{program.department.name}</CTableDataCell>
+                <CTableDataCell>{program.name}</CTableDataCell>
+                {/* <CTableDataCell>{program.code ? program.code : 'N/A'}</CTableDataCell>
               <CTableDataCell>{program.description ? program.description : 'N/A'}</CTableDataCell> */}
-              <CTableDataCell>
-                <CTooltip content="Edit" placement="top">
-                  <CIcon
-                    icon={cilPencil}
-                    className="me-2 text-secondary"
-                    role="button"
-                    title="Edit"
-                    onClick={() => handleEditProgram(program)}
-                  />
-                </CTooltip>
+                <CTableDataCell>
+                  <CTooltip content="Edit" placement="top">
+                    <CIcon
+                      icon={cilPencil}
+                      className="me-2 text-secondary"
+                      role="button"
+                      title="Edit"
+                      onClick={() => handleEditProgram(program)}
+                    />
+                  </CTooltip>
+                </CTableDataCell>
+              </CTableRow>
+            ))}
+        </CTableBody>
+
+        {isLoading && (
+          <CTableBody>
+            <CTableRow>
+              <CTableDataCell colSpan={8} className="text-center">
+                No data available
               </CTableDataCell>
             </CTableRow>
-          ))}
-        </CTableBody>
+          </CTableBody>
+        )}
+
+        {programs.length === 0 && !isLoading && (
+          <CTableBody>
+            <CTableRow>
+              <CTableDataCell colSpan={8} className="text-center">
+                No data available
+              </CTableDataCell>
+            </CTableRow>
+          </CTableBody>
+        )}
+
+        {isLoading && <BackdropLoader />}
       </CTable>
 
       <div className="d-flex justify-content-between align-items-center">

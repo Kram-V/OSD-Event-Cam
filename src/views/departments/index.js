@@ -34,6 +34,7 @@ import {
 import { createDepartment, getAllDepartments, updateDepartment } from '../../http/departments'
 
 import { Bounce, toast } from 'react-toastify'
+import BackdropLoader from '../../components/BackdropLoader'
 
 const Departments = () => {
   const [departments, setDepartments] = useState([])
@@ -44,6 +45,7 @@ const Departments = () => {
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [isEditModalOpen, setIsEditModalOpen] = useState(false)
 
+  const [isLoading, setIsLoading] = useState(false)
   const [isCreateLoading, setIsCreateLoading] = useState(false)
   const [isEditLoading, setIsEditLoading] = useState(false)
 
@@ -110,11 +112,14 @@ const Departments = () => {
   }
 
   const getDepartments = () => {
+    setIsLoading(true)
+
     getAllDepartments()
       .then((res) => {
         setDepartments(res.data.departments)
       })
       .catch((e) => console.log(e))
+      .finally(() => setIsLoading(false))
   }
 
   const handleReset = () => {
@@ -172,24 +177,48 @@ const Departments = () => {
           </CTableRow>
         </CTableHead>
         <CTableBody>
-          {departments.map((department, i) => (
-            <CTableRow key={i}>
-              <CTableDataCell>{i + 1}</CTableDataCell>
-              <CTableDataCell>{department.name}</CTableDataCell>
-              <CTableDataCell>
-                <CTooltip content="Edit" placement="top">
-                  <CIcon
-                    icon={cilPencil}
-                    className="me-2 text-secondary"
-                    role="button"
-                    title="Edit"
-                    onClick={() => handleEditDepartment(department)}
-                  />
-                </CTooltip>
+          {departments.length > 0 &&
+            !isLoading &&
+            departments.map((department, i) => (
+              <CTableRow key={i}>
+                <CTableDataCell>{i + 1}</CTableDataCell>
+                <CTableDataCell>{department.name}</CTableDataCell>
+                <CTableDataCell>
+                  <CTooltip content="Edit" placement="top">
+                    <CIcon
+                      icon={cilPencil}
+                      className="me-2 text-secondary"
+                      role="button"
+                      title="Edit"
+                      onClick={() => handleEditDepartment(department)}
+                    />
+                  </CTooltip>
+                </CTableDataCell>
+              </CTableRow>
+            ))}
+        </CTableBody>
+
+        {isLoading && (
+          <CTableBody>
+            <CTableRow>
+              <CTableDataCell colSpan={8} className="text-center">
+                No data available
               </CTableDataCell>
             </CTableRow>
-          ))}
-        </CTableBody>
+          </CTableBody>
+        )}
+
+        {departments.length === 0 && !isLoading && (
+          <CTableBody>
+            <CTableRow>
+              <CTableDataCell colSpan={8} className="text-center">
+                No data available
+              </CTableDataCell>
+            </CTableRow>
+          </CTableBody>
+        )}
+
+        {isLoading && <BackdropLoader />}
       </CTable>
 
       <div className="d-flex justify-content-between align-items-center">

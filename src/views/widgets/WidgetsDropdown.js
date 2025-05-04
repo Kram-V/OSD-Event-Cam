@@ -40,7 +40,7 @@ const WidgetsDropdown = (props) => {
   return (
     <>
       <div className="d-flex justify-content-end fw-bold fs-3 mb-4">
-        Academic Year: {academicYear}
+        Academic Year: {academicYear} (2nd Semester)
       </div>
 
       <CRow className={props.className} xs={{ gutter: 4 }}>

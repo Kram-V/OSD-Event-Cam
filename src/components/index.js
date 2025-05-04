@@ -11,6 +11,7 @@ import DocsExample from './DocsExample'
 import ProtectedRoute from './ProtectedRoute'
 import GuestRoute from './GuestRoute'
 import Card from './Card'
+import BackdropLoader from './BackdropLoader'
 
 export {
   AppBreadcrumb,
@@ -26,4 +27,5 @@ export {
   ProtectedRoute,
   GuestRoute,
   Card,
+  BackdropLoader,
 }
