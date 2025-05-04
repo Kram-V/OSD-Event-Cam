@@ -54,6 +54,12 @@ const navAdmin = [
   },
   {
     component: CNavItem,
+    name: 'FAQs',
+    to: '/faqs',
+    icon: <CIcon icon={cilInfo} customClassName="nav-icon" />,
+  },
+  {
+    component: CNavItem,
     name: 'Manage Users',
     to: '/manage-users',
     icon: <CIcon icon={cilGroup} customClassName="nav-icon" />,
@@ -102,6 +108,12 @@ const nav = [
     name: 'Programs',
     to: '/programs',
     icon: <CIcon icon={cilEducation} customClassName="nav-icon" />,
+  },
+  {
+    component: CNavItem,
+    name: 'FAQs',
+    to: '/faqs',
+    icon: <CIcon icon={cilInfo} customClassName="nav-icon" />,
   },
   {
     component: CNavItem,

@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import {
   CAccordion,
   CAccordionBody,
@@ -24,103 +24,74 @@ import CIcon from '@coreui/icons-react'
 import { cilInfo } from '@coreui/icons'
 
 import { useUserDetailsContext } from '../../contexts/UserDetailsContext'
+import { useNavigate } from 'react-router-dom'
+import { getAllFaqs } from '../../http/faqs'
 
 const Help = () => {
   const { user } = useUserDetailsContext()
+
+  const [faqs, setFaqs] = useState([])
 
   const [fullname, setFullname] = useState(user.fullname)
   const [email, setEmail] = useState(user.email)
   const [message, setMessage] = useState('')
 
+  const navigate = useNavigate()
+
   const handleSubmit = (e) => {
     e.preventDefault()
-
-    console.log('submitteed', message)
   }
+
+  const navigateToAddingFaqs = () => {
+    navigate('/faqs')
+  }
+
+  useEffect(() => {
+    getAllFaqs()
+      .then((res) => {
+        setFaqs(res.data.faqs)
+      })
+      .catch((e) => console.log(e))
+  }, [])
 
   return (
     <>
       <div className="d-flex align-items-center gap-1">
-        <h4>FAQs</h4>{' '}
-        <CIcon
-          style={{ top: '-2px' }}
-          className="position-relative"
-          icon={cilInfo}
-          height={25}
-          width={25}
-        />
+        <h4>FAQs</h4>
       </div>
 
       <CRow>
-        <CCol md={12}>
-          <CAccordion className="mb-4">
-            <CAccordionItem itemKey={1}>
-              <CAccordionHeader>
-                <b>Who can create reports in the system?</b>
-              </CAccordionHeader>
-              <CAccordionBody>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
-                incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud
-                exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute
-                irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
-                pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia
-                deserunt mollit anim id est laborum.
-              </CAccordionBody>
-            </CAccordionItem>
-            <CAccordionItem itemKey={2}>
-              <CAccordionHeader>
-                <b>Can I customize the format of a report?</b>
-              </CAccordionHeader>
-              <CAccordionBody>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
-                incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud
-                exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute
-                irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
-                pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia
-                deserunt mollit anim id est laborum.
-              </CAccordionBody>
-            </CAccordionItem>
-            <CAccordionItem itemKey={3}>
-              <CAccordionHeader>
-                <b>Can I filter or sort the data in reports?</b>
-              </CAccordionHeader>
-              <CAccordionBody>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
-                incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud
-                exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute
-                irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
-                pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia
-                deserunt mollit anim id est laborum.
-              </CAccordionBody>
-            </CAccordionItem>
-            <CAccordionItem itemKey={4}>
-              <CAccordionHeader>
-                <b>Can I filter or sort the data in reports?</b>
-              </CAccordionHeader>
-              <CAccordionBody>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
-                incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud
-                exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute
-                irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
-                pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia
-                deserunt mollit anim id est laborum.
-              </CAccordionBody>
-            </CAccordionItem>
-            <CAccordionItem itemKey={5}>
-              <CAccordionHeader>
-                <b>Can reports be exported or printed?</b>
-              </CAccordionHeader>
-              <CAccordionBody>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
-                incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud
-                exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute
-                irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
-                pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia
-                deserunt mollit anim id est laborum.
-              </CAccordionBody>
-            </CAccordionItem>
-          </CAccordion>
-        </CCol>
+        {faqs.length > 0 ? (
+          <CCol md={12}>
+            <CAccordion className="mb-4">
+              {faqs.map((faq, i) => (
+                <CAccordionItem itemKey={i + 1}>
+                  <CAccordionHeader>
+                    <b>{faq.question}?</b>
+                  </CAccordionHeader>
+                  <CAccordionBody>{faq.description}</CAccordionBody>
+                </CAccordionItem>
+              ))}
+            </CAccordion>
+          </CCol>
+        ) : (
+          <CCol md={12}>
+            <CCard className="mb-4">
+              <CCardBody style={{ textAlign: 'center', padding: '100px 0px' }}>
+                <h2>NO FAQs Yet</h2>
+                <p>To add FAQs, you may add by clicking the button below</p>
+                <CButton
+                  type="submit"
+                  color="primary"
+                  className="px-4"
+                  onClick={navigateToAddingFaqs}
+                >
+                  Add FAQs
+                </CButton>
+              </CCardBody>
+            </CCard>
+          </CCol>
+        )}
 
         <CCol md={6}>
           <CCard className="mb-4">
