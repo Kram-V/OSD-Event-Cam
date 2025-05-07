@@ -1,10 +1,9 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import PropTypes from 'prop-types'
 
 import { CRow, CCol } from '@coreui/react'
-import { getStyle } from '@coreui/utils'
 import CIcon from '@coreui/icons-react'
-import { cilCheckCircle, cilHistory, cilPeople, cilShieldAlt, cilWarning } from '@coreui/icons'
+import { cilCheckCircle, cilHistory, cilPeople, cilWarning } from '@coreui/icons'
 import Card from '../../components/Card'
 
 import ContentLoader from 'react-content-loader'
@@ -17,9 +16,11 @@ const month = today.getMonth() + 1
 const academicYear = month >= 6 ? `${year}-${year + 1}` : `${year - 1}-${year}`
 
 const WidgetsDropdown = (props) => {
-  const [isLoading, setIsLoading] = useState(false)
   const [totalAdminUsers, setTotalAdminUsers] = useState(0)
   const [totalNonAdminUsers, setTotalNonAdminUsers] = useState(0)
+  const [totalReports, setTotalReports] = useState(0)
+
+  const [isLoading, setIsLoading] = useState(false)
 
   const getAllStats = () => {
     setIsLoading(true)
@@ -28,6 +29,7 @@ const WidgetsDropdown = (props) => {
       .then((res) => {
         setTotalAdminUsers(res.data.total_admin_users)
         setTotalNonAdminUsers(res.data.total_non_admin_users)
+        setTotalReports(res.data.total_reports)
       })
       .catch((e) => console.log(e))
       .finally(() => setIsLoading(false))
@@ -56,7 +58,7 @@ const WidgetsDropdown = (props) => {
             </ContentLoader>
           ) : (
             <Card
-              total={50}
+              total={totalReports}
               subText="Total Student Reports"
               icon={<CIcon icon={cilWarning} size="xl" />}
               bgColor="bg-danger"
