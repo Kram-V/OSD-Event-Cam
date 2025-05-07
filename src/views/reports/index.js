@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import {
   CTable,
   CTableRow,
@@ -22,8 +22,29 @@ import {
   cilSearch,
 } from '@coreui/icons'
 import { Link } from 'react-router-dom'
+import { getAllReports } from '../../http/reports'
+import BackdropLoader from '../../components/BackdropLoader'
+import { formatDate, formatTime } from '../../helper'
 
 const Reports = () => {
+  const [isLoading, setIsLoading] = useState(false)
+  const [reports, setReports] = useState([])
+
+  const getReports = () => {
+    setIsLoading(true)
+
+    getAllReports()
+      .then((res) => {
+        setReports(res.data.reports)
+      })
+      .catch((e) => console.log(e))
+      .finally(() => setIsLoading(false))
+  }
+
+  useEffect(() => {
+    getReports()
+  }, [])
+
   return (
     <div>
       <div className="d-flex justify-content-between align-items-center mb-4">
@@ -31,10 +52,10 @@ const Reports = () => {
 
         <div className="d-flex align-items-center gap-2 ">
           <CFormSelect style={{ width: '220px' }}>
-            <option>Select Validation Type</option>
-            <option value="Validation Type 1">Validation Type 1</option>
-            <option value="Validation Type 2">Validation Type 2</option>
-            <option value="Validation Type 3">Validation Type 3</option>
+            <option>Select Violation Type</option>
+            <option value="Violation Type 1">Violation Type 1</option>
+            <option value="Violation Type 2">Violation Type 2</option>
+            <option value="Violation Type 3">Violation Type 3</option>
           </CFormSelect>
 
           <CFormInput style={{ width: '200px' }} type="date" />
@@ -63,96 +84,78 @@ const Reports = () => {
             <CTableHeaderCell scope="col">Student ID</CTableHeaderCell>
             <CTableHeaderCell scope="col">Student Name</CTableHeaderCell>
             <CTableHeaderCell scope="col"> Violation Type</CTableHeaderCell>
-            <CTableHeaderCell scope="col">Date/Time</CTableHeaderCell>
+            <CTableHeaderCell scope="col">Date Created</CTableHeaderCell>
+            <CTableHeaderCell scope="col">Time</CTableHeaderCell>
             <CTableHeaderCell scope="col">Status</CTableHeaderCell>
             <CTableHeaderCell scope="col">Actions</CTableHeaderCell>
           </CTableRow>
         </CTableHead>
-        <CTableBody>
-          <CTableRow>
-            <CTableDataCell>1111111</CTableDataCell>
-            <CTableDataCell>John Doe</CTableDataCell>
-            <CTableDataCell>Violation Type 1</CTableDataCell>
-            <CTableDataCell>2025-01-20 10:10:10</CTableDataCell>
-            <CTableDataCell>
-              <CBadge color="warning">Pending</CBadge>
-            </CTableDataCell>
-            <CTableDataCell>
-              <CTooltip content="View Details" placement="top">
-                <Link to="/reports/1" className="text-secondary">
-                  <CIcon icon={cilSearch} className="me-2" role="button" title="View" />
-                </Link>
-              </CTooltip>
-              <CTooltip content="Edit" placement="top">
-                <CIcon
-                  icon={cilPencil}
-                  className="me-2 text-secondary"
-                  role="button"
-                  title="Edit"
-                />
-              </CTooltip>
-              <CTooltip content="Mark as Resolved" placement="top">
-                <CIcon
-                  icon={cilCheckCircle}
-                  role="button"
-                  title="Mark as Solved"
-                  className="text-secondary"
-                />
-              </CTooltip>
-            </CTableDataCell>
-          </CTableRow>
 
-          <CTableRow>
-            <CTableDataCell>2222222</CTableDataCell>
-            <CTableDataCell>Jane Doe</CTableDataCell>
-            <CTableDataCell>Violation Type 2</CTableDataCell>
-            <CTableDataCell>2025-03-23 14:30:05</CTableDataCell>
-            <CTableDataCell>
-              <CBadge color="success">Resolved</CBadge>
-            </CTableDataCell>
-            <CTableDataCell>
-              <CTooltip content="View Details" placement="top">
-                <Link to="/reports/1" className="text-secondary">
-                  <CIcon icon={cilSearch} className="me-2" role="button" title="View" />
-                </Link>
-              </CTooltip>
-              <CTooltip content="Edit" placement="top">
-                <CIcon
-                  icon={cilPencil}
-                  className="me-2 text-secondary"
-                  role="button"
-                  title="Edit"
-                />
-              </CTooltip>
-            </CTableDataCell>
-          </CTableRow>
+        {reports.length > 0 &&
+          !isLoading &&
+          reports.map((report) => {
+            return (
+              <CTableBody key={report.id}>
+                <CTableRow>
+                  <CTableDataCell>{report.student_id}</CTableDataCell>
+                  <CTableDataCell>{report.student_name}</CTableDataCell>
+                  <CTableDataCell>{report.violation_name}</CTableDataCell>
+                  <CTableDataCell>{formatDate(report.created_at)}</CTableDataCell>
+                  <CTableDataCell>{formatTime(report.time)}</CTableDataCell>
+                  <CTableDataCell>
+                    <CBadge color={report.status === 'pending' ? 'warning' : 'success'}>
+                      {report.status === 'pending' ? 'Pending' : 'Resolved'}
+                    </CBadge>
+                  </CTableDataCell>
+                  <CTableDataCell>
+                    <CTooltip content="View Details" placement="top">
+                      <Link to={`/reports/${report.id}`} className="text-secondary">
+                        <CIcon icon={cilSearch} className="me-2" role="button" title="View" />
+                      </Link>
+                    </CTooltip>
+                    <CTooltip content="Edit" placement="top">
+                      <CIcon
+                        icon={cilPencil}
+                        className="me-2 text-secondary"
+                        role="button"
+                        title="Edit"
+                      />
+                    </CTooltip>
+                    {report.status === 'pending' && (
+                      <CTooltip content="Mark as Resolved" placement="top">
+                        <CIcon
+                          icon={cilCheckCircle}
+                          role="button"
+                          title="Mark as Solved"
+                          className="text-secondary"
+                        />
+                      </CTooltip>
+                    )}
+                  </CTableDataCell>
+                </CTableRow>
+              </CTableBody>
+            )
+          })}
 
-          <CTableRow>
-            <CTableDataCell>3333333</CTableDataCell>
-            <CTableDataCell>Ryan Bang</CTableDataCell>
-            <CTableDataCell>Violation Type 3</CTableDataCell>
-            <CTableDataCell>2025-05-23 14:30:05</CTableDataCell>
-            <CTableDataCell>
-              <CBadge color="success">Resolved</CBadge>
-            </CTableDataCell>
+        {isLoading && (
+          <CTableBody>
+            <CTableRow>
+              <CTableDataCell colSpan={8} className="text-center">
+                No data available
+              </CTableDataCell>
+            </CTableRow>
+          </CTableBody>
+        )}
 
-            <CTableDataCell>
-              <CTooltip content="View Details" placement="top">
-                <Link to="/reports/1" className="text-secondary">
-                  <CIcon icon={cilSearch} className="me-2" role="button" title="View" />
-                </Link>
-              </CTooltip>
-              <CTooltip content="Edit" placement="top">
-                <CIcon
-                  icon={cilPencil}
-                  className="me-2 text-secondary"
-                  role="button"
-                  title="Edit"
-                />
-              </CTooltip>
-            </CTableDataCell>
-          </CTableRow>
-        </CTableBody>
+        {reports.length === 0 && !isLoading && (
+          <CTableBody>
+            <CTableRow>
+              <CTableDataCell colSpan={8} className="text-center">
+                No data available
+              </CTableDataCell>
+            </CTableRow>
+          </CTableBody>
+        )}
       </CTable>
 
       <div className="d-flex justify-content-between align-items-center">
@@ -188,6 +191,8 @@ const Reports = () => {
           </CButton>
         </div>
       </div>
+
+      {isLoading && <BackdropLoader />}
     </div>
   )
 }

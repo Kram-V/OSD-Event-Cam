@@ -1,13 +1,48 @@
-import { cilArrowLeft, cilBell, cilCloudDownload, cilPrint } from '@coreui/icons'
+import { cilArrowLeft, cilCloudDownload, cilPrint } from '@coreui/icons'
 import CIcon from '@coreui/icons-react'
-import { CBadge, CButton, CCard, CCardBody, CCardHeader } from '@coreui/react'
+import { CBadge, CButton, CCard, CCardHeader } from '@coreui/react'
 import { CRow, CCol } from '@coreui/react'
-import React from 'react'
-import { Link } from 'react-router-dom'
+import React, { useCallback, useEffect, useState } from 'react'
+import { Link, useParams } from 'react-router-dom'
 
 import { CTab, CTabContent, CTabList, CTabPanel, CTabs } from '@coreui/react'
+import { getReport } from '../../http/reports'
+import BackdropLoader from '../../components/BackdropLoader'
+import { formatDate, formatTime } from '../../helper'
 
 const ReportDetails = () => {
+  const [report, setReport] = useState(null)
+  const [isLoading, setIsLoading] = useState(false)
+
+  const { id } = useParams()
+
+  const getReportDetails = useCallback(() => {
+    setIsLoading(true)
+
+    getReport(id)
+      .then((res) => {
+        if (res.data.report.violations) {
+          let violationStr = ''
+
+          const allViolations = JSON.parse(res.data.report.violations)
+
+          allViolations.forEach((violation, i) => {
+            return (violationStr += `${violation}${i === allViolations.length - 1 ? '' : i === allViolations.length - 2 ? ' and ' : ', '}`)
+          })
+
+          setReport({ ...res.data.report, violations: violationStr })
+        } else {
+          setReport(res.data.report)
+        }
+      })
+      .catch((e) => console.log(e))
+      .finally(() => setIsLoading(false))
+  }, [id])
+
+  useEffect(() => {
+    getReportDetails()
+  }, [getReportDetails])
+
   return (
     <div className="mb-4">
       <CCard className="mb-4">
@@ -27,7 +62,12 @@ const ReportDetails = () => {
             <CTab aria-controls="attached-evidence-pane" itemKey={3}>
               Attached Evidence
             </CTab>
-            <CTab aria-controls="remarks-pane" itemKey={4}>
+
+            <CTab aria-controls="attached-evidence-pane" itemKey={4}>
+              Guardian Information
+            </CTab>
+
+            <CTab aria-controls="remarks-pane" itemKey={5}>
               Remarks
             </CTab>
           </CTabList>
@@ -42,25 +82,25 @@ const ReportDetails = () => {
                       <div style={{ fontWeight: 600 }} className="mb-2">
                         Name:
                       </div>
-                      <span>John Doe</span>
+                      <span>{report?.student_name}</span>
                     </div>
                     <div className="d-flex gap-2">
                       <div style={{ fontWeight: 600 }} className="mb-2">
                         Student ID:
                       </div>
-                      <span>111111111</span>
+                      <span>{report?.student_id}</span>
                     </div>
                     <div className="d-flex gap-2">
                       <div style={{ fontWeight: 600 }} className="mb-2">
-                        Grade & Section:
+                        Department:
                       </div>
-                      <span>N/A</span>
+                      <span>{report?.department?.name}</span>
                     </div>
                     <div className="d-flex gap-2">
                       <div style={{ fontWeight: 600 }} className="mb-2">
                         Year & Course:
                       </div>
-                      <span>N/A</span>
+                      <span>N/A / {report?.program?.name}</span>
                     </div>
                   </div>
                 </CCol>
@@ -73,19 +113,19 @@ const ReportDetails = () => {
                       <div style={{ fontWeight: 600 }} className="mb-2">
                         Date:
                       </div>
-                      <span>2025-01-10</span>
+                      <span>{report?.created_at && formatDate(report.created_at)}</span>
                     </div>
                     <div className="d-flex gap-2">
                       <div style={{ fontWeight: 600 }} className="mb-2">
                         Location:
                       </div>
-                      <span>N/A</span>
+                      <span>{report?.location}</span>
                     </div>
                     <div className="d-flex gap-2">
                       <div style={{ fontWeight: 600 }} className="mb-2">
                         Time:
                       </div>
-                      <span>N/A</span>
+                      <span>{report?.time && formatTime(report.time)}</span>
                     </div>
                   </div>
                 </CCol>
@@ -94,17 +134,23 @@ const ReportDetails = () => {
             <CTabPanel className="p-3" aria-labelledby="violation-type-pane" itemKey={2}>
               <CRow className="g-5">
                 <CCol md={6}>
-                  <h5 className="mb-3 mt-3">Inappropriate Civilian Attire</h5>
+                  {report?.violation_name !== 'Other Violations' && (
+                    <>
+                      <h5 className="mb-3 mt-3">{report?.violation_name}</h5>
+                      <div style={{ fontSize: '15px', maxWidth: '300px' }}>
+                        {report?.violations}
+                      </div>
+                    </>
+                  )}
 
-                  <div style={{ fontSize: '15px', maxWidth: '300px' }}>
-                    Croptop, Shorts, Leggings, Mini-skirt, Sandals/Slippers and Tattered Jeans
-                  </div>
-                </CCol>
-
-                <CCol md={6}>
-                  <h5 className="mb-3 mt-3">Other Violation</h5>
-
-                  <div style={{ fontSize: '15px', maxWidth: '300px' }}>N/A</div>
+                  {report?.violation_name === 'Other Violations' && (
+                    <>
+                      <h5 className="mb-3 mt-3">{report?.other_violation_name}</h5>
+                      <div style={{ fontSize: '15px', maxWidth: '300px' }}>
+                        {report?.explain_specify}
+                      </div>
+                    </>
+                  )}
                 </CCol>
               </CRow>
             </CTabPanel>
@@ -138,8 +184,11 @@ const ReportDetails = () => {
                         Status:
                       </div>
 
-                      <CBadge style={{ position: 'relative', top: '-6px' }} color="warning">
-                        Pending
+                      <CBadge
+                        style={{ position: 'relative', top: '-6px' }}
+                        color={report?.status === 'pending' ? 'warning' : 'success'}
+                      >
+                        {report?.status === 'pending' ? 'Pending' : 'Resolved'}
                       </CBadge>
                     </div>
 
@@ -158,30 +207,35 @@ const ReportDetails = () => {
                           <CIcon icon={cilPrint} className="me-1" />
                           Print
                         </CButton>
-
-                        <CButton className="d-flex align-items-center" color="primary" size="sm">
-                          <CIcon icon={cilBell} className="me-1" />
-                          Notify Parent
-                        </CButton>
                       </div>
                     </div>
                   </div>
                 </CCol>
               </CRow>
             </CTabPanel>
-            <CTabPanel className="p-3" aria-labelledby="current-status-pane" itemKey={4}>
+            <CTabPanel className="p-3" aria-labelledby="violation-type-pane" itemKey={4}>
+              <CRow className="g-5">
+                <CCol md={6}>
+                  <h5 className="mb-3 mt-3">Guardian Name</h5>
+
+                  <div style={{ fontSize: '15px', maxWidth: '300px' }}>{report?.guardian_name}</div>
+                </CCol>
+
+                <CCol md={6}>
+                  <h5 className="mb-3 mt-3">Phone Number</h5>
+
+                  <div style={{ fontSize: '15px', maxWidth: '300px' }}>
+                    {report?.guardian_phone_number}
+                  </div>
+                </CCol>
+              </CRow>
+            </CTabPanel>
+            <CTabPanel className="p-3" aria-labelledby="current-status-pane" itemKey={5}>
               <CRow md={6}>
                 <CCol md={6}>
                   <h5 className="mb-3 mt-3">Remarks</h5>
 
-                  <div>
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
-                    incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis
-                    nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
-                    Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu
-                    fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
-                    culpa qui officia deserunt mollit anim id est laborum.
-                  </div>
+                  <div>{!report?.other_remarks ? 'N/A' : report.other_remarks}</div>
                 </CCol>
               </CRow>
             </CTabPanel>
@@ -195,6 +249,8 @@ const ReportDetails = () => {
           Go to reports page
         </CButton>
       </Link>
+
+      {isLoading && <BackdropLoader />}
     </div>
   )
 }
