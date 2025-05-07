@@ -11,6 +11,12 @@ import {
   CButton,
   CFormSelect,
   CFormInput,
+  CModal,
+  CModalHeader,
+  CModalTitle,
+  CModalFooter,
+  CModalBody,
+  CSpinner,
 } from '@coreui/react'
 import CIcon from '@coreui/icons-react'
 import {
@@ -22,13 +28,19 @@ import {
   cilSearch,
 } from '@coreui/icons'
 import { Link } from 'react-router-dom'
-import { getAllReports } from '../../http/reports'
+import { getAllReports, markAsResolved } from '../../http/reports'
 import BackdropLoader from '../../components/BackdropLoader'
 import { formatDate, formatTime } from '../../helper'
+
+import { Bounce, toast } from 'react-toastify'
 
 const Reports = () => {
   const [isLoading, setIsLoading] = useState(false)
   const [reports, setReports] = useState([])
+  const [reportId, setReportId] = useState(null)
+
+  const [isMarkAsResolvedModal, setIsMarkAsResolvedModal] = useState(false)
+  const [isMarkAsResolvedLoading, setIsMarkAsResolvedLoading] = useState(false)
 
   const getReports = () => {
     setIsLoading(true)
@@ -39,6 +51,36 @@ const Reports = () => {
       })
       .catch((e) => console.log(e))
       .finally(() => setIsLoading(false))
+  }
+
+  const openMarkAsResolvedModal = (id) => {
+    setIsMarkAsResolvedModal(true)
+    setReportId(id)
+  }
+
+  const handleMarkAsResolved = () => {
+    setIsMarkAsResolvedLoading(true)
+
+    markAsResolved(reportId)
+      .then((res) => {
+        toast.success('Report marked as resolved successfully', {
+          position: 'top-right',
+          autoClose: 4000,
+          hideProgressBar: false,
+          closeOnClick: false,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: 'light',
+          transition: Bounce,
+        })
+
+        setReportId(null)
+        setIsMarkAsResolvedModal(false)
+        getReports()
+      })
+      .catch((e) => console.log(e))
+      .finally(() => setIsMarkAsResolvedLoading(false))
   }
 
   useEffect(() => {
@@ -124,6 +166,7 @@ const Reports = () => {
                     {report.status === 'pending' && (
                       <CTooltip content="Mark as Resolved" placement="top">
                         <CIcon
+                          onClick={() => openMarkAsResolvedModal(report.id)}
                           icon={cilCheckCircle}
                           role="button"
                           title="Mark as Solved"
@@ -193,6 +236,39 @@ const Reports = () => {
       </div>
 
       {isLoading && <BackdropLoader />}
+
+      {/* MARK AS RESOLVED MODAL CONFIRMATION */}
+      <CModal
+        backdrop="static"
+        visible={isMarkAsResolvedModal}
+        onClose={() => setIsMarkAsResolvedModal(false)}
+        aria-labelledby="LiveDemoExampleLabel"
+      >
+        <CModalHeader>
+          <CModalTitle id="LiveDemoExampleLabel">Resolve Report</CModalTitle>
+        </CModalHeader>
+        <CModalBody>Are you sure you want to resolve this report?</CModalBody>
+        <CModalFooter>
+          <CButton
+            disabled={isMarkAsResolvedLoading}
+            color="secondary"
+            onClick={() => setIsMarkAsResolvedModal(false)}
+          >
+            Close
+          </CButton>
+          <CButton
+            disabled={isMarkAsResolvedLoading}
+            color="primary"
+            onClick={handleMarkAsResolved}
+          >
+            {isMarkAsResolvedLoading ? (
+              <CSpinner style={{ width: '20px', height: '20px' }} />
+            ) : (
+              'Mark as Resolve'
+            )}
+          </CButton>
+        </CModalFooter>
+      </CModal>
     </div>
   )
 }

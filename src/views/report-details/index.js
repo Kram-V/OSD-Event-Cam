@@ -100,7 +100,9 @@ const ReportDetails = () => {
                       <div style={{ fontWeight: 600 }} className="mb-2">
                         Year & Course:
                       </div>
-                      <span>N/A / {report?.program?.name}</span>
+                      <span>
+                        {report?.year} / {report?.program?.name}
+                      </span>
                     </div>
                   </div>
                 </CCol>
