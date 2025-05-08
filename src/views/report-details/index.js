@@ -1,16 +1,43 @@
-import { cilArrowLeft, cilCloudDownload, cilPrint } from '@coreui/icons'
-import CIcon from '@coreui/icons-react'
-import { CBadge, CButton, CCard, CCardHeader } from '@coreui/react'
-import { CRow, CCol } from '@coreui/react'
 import React, { useCallback, useEffect, useState } from 'react'
+import { cilArrowLeft, cilBell, cilCloudDownload, cilPrint } from '@coreui/icons'
+import CIcon from '@coreui/icons-react'
+import { CBadge, CButton, CCard, CCardHeader, CRow, CCol } from '@coreui/react'
 import { Link, useParams } from 'react-router-dom'
 
-import { CTab, CTabContent, CTabList, CTabPanel, CTabs } from '@coreui/react'
-import { getReport } from '../../http/reports'
-import BackdropLoader from '../../components/BackdropLoader'
 import { formatDate, formatTime } from '../../helper'
 
+import BackdropLoader from '../../components/BackdropLoader'
+
+import { getReport } from '../../http/reports'
+
+const tabStyle = {
+  padding: '10px 20px',
+  cursor: 'pointer',
+  borderBottom: '3px solid transparent',
+  marginRight: '15px',
+  fontWeight: 600,
+  fontSize: '16px',
+  background: 'gradient(to right,rgb(23, 24, 26), #f8f9fa)',
+  border: '3px solid transparent',
+  borderRadius: '0',
+  color: '#000',
+  transition: 'border-color 0.3s ease, color 0.3s ease',
+  outline: 'none',
+  textDecoration: 'none',
+  display: 'inline-block',
+  textAlign: 'center',
+}
+
+const activeTabStyle = {
+  ...tabStyle,
+  borderBottom: '3px solid #0d6efd',
+  color: '#0d6efd',
+  fontWeight: 700,
+}
+
 const ReportDetails = () => {
+  const [activeTab, setActiveTab] = useState(1)
+
   const [report, setReport] = useState(null)
   const [isLoading, setIsLoading] = useState(false)
 
@@ -49,206 +76,260 @@ const ReportDetails = () => {
         <CCardHeader>
           <strong>Violation Details</strong>
         </CCardHeader>
-
-        <CTabs activeItemKey={1} className="p-4">
-          <CTabList variant="underline-border">
-            <CTab aria-controls="student-information-pane" itemKey={1}>
+        <div className="p-4">
+          {/* Custom Tabs */}
+          <nav aria-label="Report details tabs" style={{ marginBottom: 20 }}>
+            <button
+              type="button"
+              style={activeTab === 1 ? activeTabStyle : tabStyle}
+              onClick={() => setActiveTab(1)}
+              aria-selected={activeTab === 1}
+              aria-controls="student-information"
+              id="tab-1"
+            >
               Student Information
-            </CTab>
-            <CTab aria-controls="violation-type-pane" itemKey={2}>
+            </button>
+            <button
+              type="button"
+              style={activeTab === 2 ? activeTabStyle : tabStyle}
+              onClick={() => setActiveTab(2)}
+              aria-selected={activeTab === 2}
+              aria-controls="violation-type"
+              id="tab-2"
+            >
               Violation Type
-            </CTab>
-
-            <CTab aria-controls="attached-evidence-pane" itemKey={3}>
+            </button>
+            <button
+              type="button"
+              style={activeTab === 3 ? activeTabStyle : tabStyle}
+              onClick={() => setActiveTab(3)}
+              aria-selected={activeTab === 3}
+              aria-controls="attached-evidence"
+              id="tab-3"
+            >
               Attached Evidence
-            </CTab>
-
-            <CTab aria-controls="attached-evidence-pane" itemKey={4}>
+            </button>
+            <button
+              type="button"
+              style={activeTab === 4 ? activeTabStyle : tabStyle}
+              onClick={() => setActiveTab(4)}
+              aria-selected={activeTab === 4}
+              aria-controls="guardian-information"
+              id="tab-4"
+            >
               Guardian Information
-            </CTab>
-
-            <CTab aria-controls="remarks-pane" itemKey={5}>
+            </button>
+            <button
+              type="button"
+              style={activeTab === 5 ? activeTabStyle : tabStyle}
+              onClick={() => setActiveTab(5)}
+              aria-selected={activeTab === 5}
+              aria-controls="remarks"
+              id="tab-5"
+            >
               Remarks
-            </CTab>
-          </CTabList>
-          <CTabContent>
-            <CTabPanel className="p-3" aria-labelledby="student-information-pane" itemKey={1}>
-              <CRow className="g-5">
-                <CCol md={6}>
-                  <h5 className="mb-3 mt-3">Student Information</h5>
+            </button>
+          </nav>
 
-                  <div style={{ fontSize: '15px' }}>
-                    <div className="d-flex gap-2">
-                      <div style={{ fontWeight: 600 }} className="mb-2">
-                        Name:
-                      </div>
-                      <span>{report?.student_name}</span>
+          {/* Tab Panels */}
+          <section
+            id="student-information"
+            role="tabpanel"
+            aria-labelledby="tab-1"
+            hidden={activeTab !== 1}
+          >
+            <CRow className="g-5">
+              <CCol md={6}>
+                <h5 className="mb-3 mt-3">Student Information</h5>
+                <div style={{ fontSize: '15px' }}>
+                  <div className="d-flex gap-2">
+                    <div style={{ fontWeight: 600 }} className="mb-2">
+                      Name:
                     </div>
-                    <div className="d-flex gap-2">
-                      <div style={{ fontWeight: 600 }} className="mb-2">
-                        Student ID:
-                      </div>
-                      <span>{report?.student_id}</span>
+                    <span>{report?.student_name}</span>
+                  </div>
+                  <div className="d-flex gap-2">
+                    <div style={{ fontWeight: 600 }} className="mb-2">
+                      Student ID:
                     </div>
-                    <div className="d-flex gap-2">
-                      <div style={{ fontWeight: 600 }} className="mb-2">
-                        Department:
-                      </div>
-                      <span>{report?.department?.name}</span>
+                    <span>{report?.student_id}</span>
+                  </div>
+                  <div className="d-flex gap-2">
+                    <div style={{ fontWeight: 600 }} className="mb-2">
+                      Department:
                     </div>
-                    <div className="d-flex gap-2">
-                      <div style={{ fontWeight: 600 }} className="mb-2">
-                        Year & Course:
-                      </div>
-                      <span>
-                        {report?.year} / {report?.program?.name}
-                      </span>
+                    <span>{report?.department?.name}</span>
+                  </div>
+                  <div className="d-flex gap-2">
+                    <div style={{ fontWeight: 600 }} className="mb-2">
+                      Year & Course:
                     </div>
+                    <span>
+                      {report?.year} / {report?.program?.name}
+                    </span>
+                  </div>
+                  <div className="d-flex gap-2">
+                    <div style={{ fontWeight: 600 }} className="mb-2">
+                      Section:
+                    </div>
+                    <span>{report?.section}</span>
+                  </div>
+                </div>
+              </CCol>
+
+              <CCol md={6}>
+                <h5 className="mb-3 mt-3">Other Information</h5>
+                <div style={{ fontSize: '15px' }}>
+                  <div className="d-flex gap-2">
+                    <div style={{ fontWeight: 600 }} className="mb-2">
+                      Date:
+                    </div>
+                    <span>{report?.created_at && formatDate(report.created_at)}</span>
+                  </div>
+                  <div className="d-flex gap-2">
+                    <div style={{ fontWeight: 600 }} className="mb-2">
+                      Location:
+                    </div>
+                    <span>{report?.location}</span>
+                  </div>
+                  <div className="d-flex gap-2">
+                    <div style={{ fontWeight: 600 }} className="mb-2">
+                      Time:
+                    </div>
+                    <span>{report?.time && formatTime(report.time)}</span>
+                  </div>
+                </div>
+              </CCol>
+            </CRow>
+          </section>
+
+          <section
+            id="violation-type"
+            role="tabpanel"
+            aria-labelledby="tab-2"
+            hidden={activeTab !== 2}
+          >
+            <CRow className="g-5">
+              <CCol md={6}>
+                {report?.violation_name !== 'Other Violations' && (
+                  <>
+                    <h5 className="mb-3 mt-3">{report?.violation_name}</h5>
+                    <div style={{ fontSize: '15px', maxWidth: '300px' }}>{report?.violations}</div>
+                  </>
+                )}
+
+                {report?.violation_name === 'Other Violations' && (
+                  <>
+                    <h5 className="mb-3 mt-3">{report?.other_violation_name}</h5>
+                    <div style={{ fontSize: '15px', maxWidth: '300px' }}>
+                      {report?.explain_specify}
+                    </div>
+                  </>
+                )}
+              </CCol>
+            </CRow>
+          </section>
+
+          <section
+            id="attached-evidence"
+            role="tabpanel"
+            aria-labelledby="tab-3"
+            hidden={activeTab !== 3}
+          >
+            <CRow className="g-5">
+              <CCol md={6}>
+                <h5 className="mb-3 mt-3">Attached Evidence</h5>
+                <div className="d-flex gap-4" style={{ fontSize: '15px' }}>
+                  <img
+                    style={{ width: '80px' }}
+                    alt="Evidence 1"
+                    src="https://thumbs.dreamstime.com/b/evidence-rubber-stamp-white-print-impress-overprint-proof-criminal-violation-confirmation-scene-murder-robbery-85484548.jpg"
+                  />
+                  <img
+                    style={{ width: '80px' }}
+                    alt="Evidence 2"
+                    src="https://thumbs.dreamstime.com/b/evidence-rubber-stamp-white-print-impress-overprint-proof-criminal-violation-confirmation-scene-murder-robbery-85484548.jpg"
+                  />
+                  <img
+                    style={{ width: '80px' }}
+                    alt="Evidence 3"
+                    src="https://thumbs.dreamstime.com/b/evidence-rubber-stamp-white-print-impress-overprint-proof-criminal-violation-confirmation-scene-murder-robbery-85484548.jpg"
+                  />
+                </div>
+              </CCol>
+
+              <CCol md={6}>
+                <h5 className="mb-3 mt-3">Current Status</h5>
+
+                <div style={{ fontSize: '15px' }}>
+                  <div className="d-flex align-items-center gap-2">
+                    <div style={{ fontWeight: 600 }} className="mb-3">
+                      Status:
+                    </div>
+
+                    <CBadge
+                      style={{ position: 'relative', top: '-6px' }}
+                      color={report?.status === 'pending' ? 'warning' : 'success'}
+                    >
+                      {report?.status === 'pending' ? 'Pending' : 'Resolved'}
+                    </CBadge>
+                  </div>
+
+                  <div className="d-flex align-items-center gap-2">
+                    <div style={{ fontWeight: 600 }} className="mb-2">
+                      Actions:
+                    </div>
+
                     <div className="d-flex gap-2">
-                      <div style={{ fontWeight: 600 }} className="mb-2">
-                        Section:
-                      </div>
-                      <span>{report?.section}</span>
+                      <CButton className="d-flex align-items-center" color="primary" size="sm">
+                        <CIcon icon={cilCloudDownload} className="me-1" />
+                        Download
+                      </CButton>
+
+                      <CButton className="d-flex align-items-center" color="primary" size="sm">
+                        <CIcon icon={cilPrint} className="me-1" />
+                        Print
+                      </CButton>
                     </div>
                   </div>
-                </CCol>
+                </div>
+              </CCol>
+            </CRow>
+          </section>
 
-                <CCol md={6}>
-                  <h5 className="mb-3 mt-3">Other Information</h5>
+          <section
+            id="guardian-information"
+            role="tabpanel"
+            aria-labelledby="tab-5"
+            hidden={activeTab !== 4}
+          >
+            <CRow>
+              <CCol md={6}>
+                <h5 className="mb-3 mt-3">Guardian Name</h5>
 
-                  <div style={{ fontSize: '15px' }}>
-                    <div className="d-flex gap-2">
-                      <div style={{ fontWeight: 600 }} className="mb-2">
-                        Date:
-                      </div>
-                      <span>{report?.created_at && formatDate(report.created_at)}</span>
-                    </div>
-                    <div className="d-flex gap-2">
-                      <div style={{ fontWeight: 600 }} className="mb-2">
-                        Location:
-                      </div>
-                      <span>{report?.location}</span>
-                    </div>
-                    <div className="d-flex gap-2">
-                      <div style={{ fontWeight: 600 }} className="mb-2">
-                        Time:
-                      </div>
-                      <span>{report?.time && formatTime(report.time)}</span>
-                    </div>
-                  </div>
-                </CCol>
-              </CRow>
-            </CTabPanel>
-            <CTabPanel className="p-3" aria-labelledby="violation-type-pane" itemKey={2}>
-              <CRow className="g-5">
-                <CCol md={6}>
-                  {report?.violation_name !== 'Other Violations' && (
-                    <>
-                      <h5 className="mb-3 mt-3">{report?.violation_name}</h5>
-                      <div style={{ fontSize: '15px', maxWidth: '300px' }}>
-                        {report?.violations}
-                      </div>
-                    </>
-                  )}
+                <div style={{ fontSize: '15px', maxWidth: '300px' }}>{report?.guardian_name}</div>
+              </CCol>
 
-                  {report?.violation_name === 'Other Violations' && (
-                    <>
-                      <h5 className="mb-3 mt-3">{report?.other_violation_name}</h5>
-                      <div style={{ fontSize: '15px', maxWidth: '300px' }}>
-                        {report?.explain_specify}
-                      </div>
-                    </>
-                  )}
-                </CCol>
-              </CRow>
-            </CTabPanel>
-            <CTabPanel className="p-3" aria-labelledby="other-violation-pane" itemKey={3}>
-              <CRow className="g-5">
-                <CCol md={6}>
-                  <h5 className="mb-3 mt-3">Attached Evidence</h5>
+              <CCol md={6}>
+                <h5 className="mb-3 mt-3">Phone Number</h5>
 
-                  <div className="d-flex gap-4" style={{ fontSize: '15px' }}>
-                    <img
-                      style={{ width: '80px' }}
-                      src="https://thumbs.dreamstime.com/b/evidence-rubber-stamp-white-print-impress-overprint-proof-criminal-violation-confirmation-scene-murder-robbery-85484548.jpg"
-                    />
-                    <img
-                      style={{ width: '80px' }}
-                      src="https://thumbs.dreamstime.com/b/evidence-rubber-stamp-white-print-impress-overprint-proof-criminal-violation-confirmation-scene-murder-robbery-85484548.jpg"
-                    />
-                    <img
-                      style={{ width: '80px' }}
-                      src="https://thumbs.dreamstime.com/b/evidence-rubber-stamp-white-print-impress-overprint-proof-criminal-violation-confirmation-scene-murder-robbery-85484548.jpg"
-                    />
-                  </div>
-                </CCol>
+                <div style={{ fontSize: '15px', maxWidth: '300px' }}>
+                  {report?.guardian_phone_number}
+                </div>
+              </CCol>
+            </CRow>
+          </section>
 
-                <CCol md={6}>
-                  <h5 className="mb-3 mt-3">Current Status</h5>
+          <section id="remarks" role="tabpanel" aria-labelledby="tab-6" hidden={activeTab !== 5}>
+            <CRow>
+              <CCol md={6}>
+                <h5 className="mb-3 mt-3">Remarks</h5>
 
-                  <div style={{ fontSize: '15px' }}>
-                    <div className="d-flex align-items-center gap-2">
-                      <div style={{ fontWeight: 600 }} className="mb-3">
-                        Status:
-                      </div>
-
-                      <CBadge
-                        style={{ position: 'relative', top: '-6px' }}
-                        color={report?.status === 'pending' ? 'warning' : 'success'}
-                      >
-                        {report?.status === 'pending' ? 'Pending' : 'Resolved'}
-                      </CBadge>
-                    </div>
-
-                    <div className="d-flex align-items-center gap-2">
-                      <div style={{ fontWeight: 600 }} className="mb-2">
-                        Actions:
-                      </div>
-
-                      <div className="d-flex gap-2">
-                        <CButton className="d-flex align-items-center" color="primary" size="sm">
-                          <CIcon icon={cilCloudDownload} className="me-1" />
-                          Download
-                        </CButton>
-
-                        <CButton className="d-flex align-items-center" color="primary" size="sm">
-                          <CIcon icon={cilPrint} className="me-1" />
-                          Print
-                        </CButton>
-                      </div>
-                    </div>
-                  </div>
-                </CCol>
-              </CRow>
-            </CTabPanel>
-            <CTabPanel className="p-3" aria-labelledby="violation-type-pane" itemKey={4}>
-              <CRow className="g-5">
-                <CCol md={6}>
-                  <h5 className="mb-3 mt-3">Guardian Name</h5>
-
-                  <div style={{ fontSize: '15px', maxWidth: '300px' }}>{report?.guardian_name}</div>
-                </CCol>
-
-                <CCol md={6}>
-                  <h5 className="mb-3 mt-3">Phone Number</h5>
-
-                  <div style={{ fontSize: '15px', maxWidth: '300px' }}>
-                    {report?.guardian_phone_number}
-                  </div>
-                </CCol>
-              </CRow>
-            </CTabPanel>
-            <CTabPanel className="p-3" aria-labelledby="current-status-pane" itemKey={5}>
-              <CRow md={6}>
-                <CCol md={6}>
-                  <h5 className="mb-3 mt-3">Remarks</h5>
-
-                  <div>{!report?.other_remarks ? 'N/A' : report.other_remarks}</div>
-                </CCol>
-              </CRow>
-            </CTabPanel>
-          </CTabContent>
-        </CTabs>
+                <div>{!report?.other_remarks ? 'N/A' : report.other_remarks}</div>
+              </CCol>
+            </CRow>
+          </section>
+        </div>
       </CCard>
 
       <Link to="/reports" className="text-decoration-none">

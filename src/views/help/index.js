@@ -122,7 +122,7 @@ const Help = () => {
                 <CTabs activeItemKey={1}>
                   <CTabList variant="tabs" layout="fill">
                     {userInstructions.map((instruction, i) => (
-                      <CTab aria-controls="home-tab-pane" itemKey={i + 1}>
+                      <CTab key={i} aria-controls="home-tab-pane" itemKey={i + 1}>
                         {instruction.instruction_name}
                       </CTab>
                     ))}
@@ -130,7 +130,12 @@ const Help = () => {
 
                   <CTabContent>
                     {userInstructions.map((instruction, i) => (
-                      <CTabPanel className="py-3" aria-labelledby="home-tab-pane" itemKey={i + 1}>
+                      <CTabPanel
+                        key={i}
+                        className="py-3"
+                        aria-labelledby="home-tab-pane"
+                        itemKey={i + 1}
+                      >
                         {instruction.description}
                       </CTabPanel>
                     ))}
