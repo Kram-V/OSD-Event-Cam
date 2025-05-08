@@ -26,11 +26,13 @@ import { cilInfo } from '@coreui/icons'
 import { useUserDetailsContext } from '../../contexts/UserDetailsContext'
 import { useNavigate } from 'react-router-dom'
 import { getAllFaqs } from '../../http/faqs'
+import { getAllUserInstructions } from '../../http/user-instructions'
 
 const Help = () => {
   const { user } = useUserDetailsContext()
 
   const [faqs, setFaqs] = useState([])
+  const [userInstructions, setUserInstructions] = useState([])
 
   const [fullname, setFullname] = useState(user.fullname)
   const [email, setEmail] = useState(user.email)
@@ -46,12 +48,29 @@ const Help = () => {
     navigate('/faqs')
   }
 
-  useEffect(() => {
+  const navigateToUserInstructions = () => {
+    navigate('/user-instructions')
+  }
+
+  const fetFaqs = () => {
     getAllFaqs()
       .then((res) => {
         setFaqs(res.data.faqs)
       })
       .catch((e) => console.log(e))
+  }
+
+  const getUserInstructions = () => {
+    getAllUserInstructions()
+      .then((res) => {
+        setUserInstructions(res.data.user_instructions)
+      })
+      .catch((e) => console.log(e))
+  }
+
+  useEffect(() => {
+    fetFaqs()
+    getUserInstructions()
   }, [])
 
   return (
@@ -99,56 +118,38 @@ const Help = () => {
               <strong>User Instructions</strong>
             </CCardHeader>
             <CCardBody>
-              <CTabs activeItemKey={1}>
-                <CTabList variant="tabs" layout="fill">
-                  <CTab aria-controls="home-tab-pane" itemKey={1}>
-                    Instruction 1
-                  </CTab>
-                  <CTab aria-controls="profile-tab-pane" itemKey={2}>
-                    Instruction 2
-                  </CTab>
-                  <CTab aria-controls="contact-tab-pane" itemKey={3}>
-                    Instruction 3
-                  </CTab>
-                  <CTab aria-controls="contact-tab-pane" itemKey={4}>
-                    Instruction 4
-                  </CTab>
-                </CTabList>
-                <CTabContent>
-                  <CTabPanel className="py-3" aria-labelledby="home-tab-pane" itemKey={1}>
-                    Lorem ipsum dolor sit amet consectetur adipiscing elit. Quisque faucibus ex
-                    sapien vitae pellentesque sem placerat. In id cursus mi pretium tellus duis
-                    convallis. Tempus leo eu aenean sed diam urna tempor. Pulvinar vivamus fringilla
-                    lacus nec metus bibendum egestas. Iaculis massa nisl malesuada lacinia integer
-                    nunc posuere. Ut hendrerit semper vel class aptent taciti sociosqu. Ad litora
-                    torquent per conubia nostra inceptos himenaeos.
-                  </CTabPanel>
-                  <CTabPanel className="py-3" aria-labelledby="profile-tab-pane" itemKey={2}>
-                    Lorem ipsum dolor sit amet consectetur adipiscing elit. Quisque faucibus ex
-                    sapien vitae pellentesque sem placerat. In id cursus mi pretium tellus duis
-                    convallis. Tempus leo eu aenean sed diam urna tempor. Pulvinar vivamus fringilla
-                    lacus nec metus bibendum egestas. Iaculis massa nisl malesuada lacinia integer
-                    nunc posuere. Ut hendrerit semper vel class aptent taciti sociosqu. Ad litora
-                    torquent per conubia nostra inceptos himenaeos.
-                  </CTabPanel>
-                  <CTabPanel className="py-3" aria-labelledby="contact-tab-pane" itemKey={3}>
-                    Lorem ipsum dolor sit amet consectetur adipiscing elit. Quisque faucibus ex
-                    sapien vitae pellentesque sem placerat. In id cursus mi pretium tellus duis
-                    convallis. Tempus leo eu aenean sed diam urna tempor. Pulvinar vivamus fringilla
-                    lacus nec metus bibendum egestas. Iaculis massa nisl malesuada lacinia integer
-                    nunc posuere. Ut hendrerit semper vel class aptent taciti sociosqu. Ad litora
-                    torquent per conubia nostra inceptos himenaeos.
-                  </CTabPanel>
-                  <CTabPanel className="py-3" aria-labelledby="disabled-tab-pane" itemKey={4}>
-                    Lorem ipsum dolor sit amet consectetur adipiscing elit. Quisque faucibus ex
-                    sapien vitae pellentesque sem placerat. In id cursus mi pretium tellus duis
-                    convallis. Tempus leo eu aenean sed diam urna tempor. Pulvinar vivamus fringilla
-                    lacus nec metus bibendum egestas. Iaculis massa nisl malesuada lacinia integer
-                    nunc posuere. Ut hendrerit semper vel class aptent taciti sociosqu. Ad litora
-                    torquent per conubia nostra inceptos himenaeos.
-                  </CTabPanel>
-                </CTabContent>
-              </CTabs>
+              {userInstructions.length > 0 ? (
+                <CTabs activeItemKey={1}>
+                  <CTabList variant="tabs" layout="fill">
+                    {userInstructions.map((instruction, i) => (
+                      <CTab aria-controls="home-tab-pane" itemKey={i + 1}>
+                        {instruction.instruction_name}
+                      </CTab>
+                    ))}
+                  </CTabList>
+
+                  <CTabContent>
+                    {userInstructions.map((instruction, i) => (
+                      <CTabPanel className="py-3" aria-labelledby="home-tab-pane" itemKey={i + 1}>
+                        {instruction.description}
+                      </CTabPanel>
+                    ))}
+                  </CTabContent>
+                </CTabs>
+              ) : (
+                <CCardBody style={{ textAlign: 'center', padding: '100px 0px' }}>
+                  <h2>No User Instructions Yet</h2>
+                  <p>To add user instructions, you may add by clicking the button below</p>
+                  <CButton
+                    type="submit"
+                    color="primary"
+                    className="px-4"
+                    onClick={navigateToUserInstructions}
+                  >
+                    Add User Instruction
+                  </CButton>
+                </CCardBody>
+              )}
             </CCardBody>
           </CCard>
         </CCol>
