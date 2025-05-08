@@ -18,7 +18,9 @@ const tabStyle = {
   fontWeight: 600,
   fontSize: '16px',
   background: 'gradient(to right,rgb(23, 24, 26), #f8f9fa)',
-  border: '3px solid transparent',
+  borderTop: '3px solid transparent',
+  borderLeft: '3px solid transparent',
+  borderRight: '3px solid transparent',
   borderRadius: '0',
   color: '#000',
   transition: 'border-color 0.3s ease, color 0.3s ease',
@@ -30,8 +32,8 @@ const tabStyle = {
 
 const activeTabStyle = {
   ...tabStyle,
-  borderBottom: '3px solid #0d6efd',
   color: '#0d6efd',
+  borderBottom: '3px solid #0d6efd',
   fontWeight: 700,
 }
 
