@@ -77,7 +77,7 @@ const WidgetsDropdown = (props) => {
             </ContentLoader>
           ) : (
             <Card
-              total={32}
+              total={0}
               subText="Total Pending Reports"
               icon={<CIcon icon={cilHistory} size="xl" />}
               bgColor="bg-warning"
@@ -96,7 +96,7 @@ const WidgetsDropdown = (props) => {
             </ContentLoader>
           ) : (
             <Card
-              total={32}
+              total={0}
               subText="Total Resolved Reports"
               icon={<CIcon icon={cilCheckCircle} size="xl" />}
               bgColor="bg-success"

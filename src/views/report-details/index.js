@@ -104,6 +104,12 @@ const ReportDetails = () => {
                         {report?.year} / {report?.program?.name}
                       </span>
                     </div>
+                    <div className="d-flex gap-2">
+                      <div style={{ fontWeight: 600 }} className="mb-2">
+                        Section:
+                      </div>
+                      <span>{report?.section}</span>
+                    </div>
                   </div>
                 </CCol>
 
