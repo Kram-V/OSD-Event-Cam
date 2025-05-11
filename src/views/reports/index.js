@@ -159,7 +159,7 @@ const Reports = () => {
             <CTableHeaderCell scope="col">Student Name</CTableHeaderCell>
             <CTableHeaderCell scope="col"> Violation Type</CTableHeaderCell>
             <CTableHeaderCell scope="col">Education Level</CTableHeaderCell>
-            <CTableHeaderCell scope="col">Time</CTableHeaderCell>
+            <CTableHeaderCell scope="col">Program</CTableHeaderCell>
             <CTableHeaderCell scope="col">Status</CTableHeaderCell>
             <CTableHeaderCell scope="col">Actions</CTableHeaderCell>
           </CTableRow>
@@ -175,7 +175,7 @@ const Reports = () => {
                   <CTableDataCell>{report.student_name}</CTableDataCell>
                   <CTableDataCell>{report.violation_name}</CTableDataCell>
                   <CTableDataCell>{report.education_level.name}</CTableDataCell>
-                  <CTableDataCell>{formatTime(report.time)}</CTableDataCell>
+                  <CTableDataCell>{report.program?.name}</CTableDataCell>
                   <CTableDataCell>
                     <CBadge color={report.status === 'pending' ? 'warning' : 'success'}>
                       {report.status === 'pending' ? 'Pending' : 'Resolved'}
