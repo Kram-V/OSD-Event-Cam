@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import {
   CTable,
   CTableRow,
@@ -40,30 +40,21 @@ const Reports = () => {
   const [reports, setReports] = useState([])
   const [reportId, setReportId] = useState(null)
 
-  const [educationLevels, setEducationLevels] = useState([])
-  const [educationLevelId, setEducationLevelId] = useState(null)
+  const [educationLevel, setEducationLevel] = useState('')
 
   const [isMarkAsResolvedModal, setIsMarkAsResolvedModal] = useState(false)
   const [isMarkAsResolvedLoading, setIsMarkAsResolvedLoading] = useState(false)
 
-  const getReports = (id) => {
+  const getReports = useCallback(() => {
     setIsLoading(true)
 
-    getAllReports({ educational_id: id })
+    getAllReports({ educational_level: educationLevel })
       .then((res) => {
         setReports(res.data.reports)
       })
       .catch((e) => console.log(e))
       .finally(() => setIsLoading(false))
-  }
-
-  const getEducationLevels = () => {
-    getAllEducationLevels()
-      .then((res) => {
-        setEducationLevels(res.data.education_levels)
-      })
-      .catch((e) => console.log(e))
-  }
+  }, [educationLevel])
 
   const openMarkAsResolvedModal = (id) => {
     setIsMarkAsResolvedModal(true)
@@ -97,14 +88,7 @@ const Reports = () => {
 
   useEffect(() => {
     getReports()
-    getEducationLevels()
-  }, [])
-
-  useEffect(() => {
-    if (educationLevelId) {
-      getReports(educationLevelId)
-    }
-  }, [educationLevelId])
+  }, [getReports])
 
   return (
     <div>
@@ -130,15 +114,13 @@ const Reports = () => {
 
           <CFormSelect
             style={{ width: '210px' }}
-            value={educationLevelId}
-            onChange={(e) => setEducationLevelId(e.target.value)}
+            value={educationLevel}
+            onChange={(e) => setEducationLevel(e.target.value)}
           >
-            <option value="all">Select Education Level</option>
-            {educationLevels.map((level) => (
-              <option key={level.id} value={level.id}>
-                {level.name}
-              </option>
-            ))}
+            <option value="All">Select Education Level</option>
+
+            <option value="College">College</option>
+            <option value="Integrated School">Integrated School</option>
           </CFormSelect>
 
           {/* <CButton
@@ -174,7 +156,7 @@ const Reports = () => {
                   <CTableDataCell>{report.student_id}</CTableDataCell>
                   <CTableDataCell>{report.student_name}</CTableDataCell>
                   <CTableDataCell>{report.violation_name}</CTableDataCell>
-                  <CTableDataCell>{report.education_level.name}</CTableDataCell>
+                  <CTableDataCell>{report.department.education_level_name}</CTableDataCell>
                   <CTableDataCell>{report.program?.name}</CTableDataCell>
                   <CTableDataCell>
                     <CBadge color={report.status === 'pending' ? 'warning' : 'success'}>

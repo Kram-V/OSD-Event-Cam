@@ -193,7 +193,7 @@ const Departments = () => {
             !isLoading &&
             programs.map((program, i) => (
               <CTableRow key={i}>
-                <CTableDataCell>{program.department.education_level.name}</CTableDataCell>
+                <CTableDataCell>{program.department.education_level_name}</CTableDataCell>
                 <CTableDataCell>{program.department.name}</CTableDataCell>
                 <CTableDataCell>{program.name}</CTableDataCell>
                 {/* <CTableDataCell>{program.code ? program.code : 'N/A'}</CTableDataCell>

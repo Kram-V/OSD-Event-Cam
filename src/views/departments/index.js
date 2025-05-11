@@ -41,7 +41,6 @@ import { getAllEducationLevels } from '../../http/education-levels'
 const Departments = () => {
   const [departments, setDepartments] = useState([])
   const [departmentId, setDepartmentId] = useState(null)
-  const [educationLevels, setEducationLevels] = useState([])
   const [educationLevel, setEducationLevel] = useState(null)
   const [name, setName] = useState('')
   const [errors, setErrors] = useState(null)
@@ -56,7 +55,7 @@ const Departments = () => {
   const handleCreateDepartment = () => {
     setIsCreateLoading(true)
 
-    createDepartment({ education_level: educationLevel, name })
+    createDepartment({ education_level_name: educationLevel, name })
       .then((res) => {
         toast.success('You have created department successfully', {
           position: 'top-right',
@@ -84,14 +83,14 @@ const Departments = () => {
   const handleEditDepartment = (data) => {
     setName(data.name)
     setDepartmentId(data.id)
-    setEducationLevel(data.education_level.id)
+    setEducationLevel(data.education_level_name)
     setIsEditModalOpen(true)
   }
 
   const handleUpdateDepartment = () => {
     setIsEditLoading(true)
 
-    updateDepartment({ education_level: educationLevel, name }, departmentId)
+    updateDepartment({ education_level_name: educationLevel, name }, departmentId)
       .then((res) => {
         toast.success('You have updated department successfully', {
           position: 'top-right',
@@ -127,12 +126,6 @@ const Departments = () => {
       .finally(() => setIsLoading(false))
   }
 
-  const getEducationLevels = () => {
-    getAllEducationLevels()
-      .then((res) => setEducationLevels(res.data.education_levels))
-      .catch((e) => console.log(e))
-  }
-
   const handleReset = () => {
     if (document.activeElement instanceof HTMLElement) {
       document.activeElement.blur()
@@ -157,7 +150,6 @@ const Departments = () => {
 
   useEffect(() => {
     getDepartments()
-    getEducationLevels()
   }, [])
 
   return (
@@ -194,7 +186,7 @@ const Departments = () => {
             !isLoading &&
             departments.map((department, i) => (
               <CTableRow key={i}>
-                <CTableDataCell>{department.education_level.name}</CTableDataCell>
+                <CTableDataCell>{department.education_level_name}</CTableDataCell>
                 <CTableDataCell>{department.name}</CTableDataCell>
                 <CTableDataCell>
                   <CTooltip content="Edit" placement="top">
@@ -292,16 +284,12 @@ const Departments = () => {
                   onChange={(e) => setEducationLevel(e.target.value)}
                 >
                   <option value="">Select Education Level</option>
-                  {educationLevels.map((educatinLevel) => (
-                    <option key={educatinLevel.id} value={educatinLevel.id}>
-                      {educatinLevel.name}
-                    </option>
-                  ))}
+                  <option value="College">College</option>
+                  <option value="Integrated School">Integrated School</option>
                 </CFormSelect>
               </CInputGroup>
-
               <div style={{ color: 'red', fontSize: '14px' }}>
-                {errors && errors['education_level'] && errors['education_level'][0]}
+                {errors && errors['education_level_name'] && errors['education_level_name'][0]}
               </div>
             </div>
 
@@ -357,16 +345,12 @@ const Departments = () => {
                   onChange={(e) => setEducationLevel(e.target.value)}
                 >
                   <option value="">Select Education Level</option>
-                  {educationLevels.map((educationLevel) => (
-                    <option key={educationLevel.id} value={educationLevel.id}>
-                      {educationLevel.name}
-                    </option>
-                  ))}
+                  <option value="College">College</option>D
+                  <option value="Integrated School">Integrated School</option>
                 </CFormSelect>
               </CInputGroup>
-
               <div style={{ color: 'red', fontSize: '14px' }}>
-                {errors && errors['education_level'] && errors['education_level'][0]}
+                {errors && errors['education_level_name'] && errors['education_level_name'][0]}
               </div>
             </div>
 

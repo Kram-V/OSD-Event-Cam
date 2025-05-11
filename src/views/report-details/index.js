@@ -160,7 +160,7 @@ const ReportDetails = () => {
                     <div style={{ fontWeight: 600 }} className="mb-2">
                       Education Level:
                     </div>
-                    <span>{report?.education_level?.name}</span>
+                    <span>{report?.department?.education_level_name}</span>
                   </div>
                   <div className="d-flex gap-2">
                     <div style={{ fontWeight: 600 }} className="mb-2">
@@ -170,10 +170,10 @@ const ReportDetails = () => {
                   </div>
                   <div className="d-flex gap-2">
                     <div style={{ fontWeight: 600 }} className="mb-2">
-                      Year & Course:
+                      {report?.year && 'Year'} {report?.grade && 'Grade'} & Course:
                     </div>
                     <span>
-                      {report?.year} / {report?.program?.name}
+                      {report?.year} {report?.grade} / {report?.program?.name}
                     </span>
                   </div>
                   <div className="d-flex gap-2">
