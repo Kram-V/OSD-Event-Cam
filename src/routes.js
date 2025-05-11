@@ -6,6 +6,7 @@ import Departments from './views/departments'
 import Programs from './views/programs'
 import Faqs from './views/faqs'
 import UserInstructions from './views/user-instructions'
+import EducationLevels from './views/education-levels'
 
 const Dashboard = React.lazy(() => import('./views/dashboard/Dashboard'))
 const Reports = React.lazy(() => import('./views/reports'))
@@ -22,6 +23,7 @@ const adminRoutes = [
   { path: '/archived-reports', name: 'Archived Reports', element: ArchivedReports },
   { path: '/student-records', name: 'Student Records', element: Records },
   { path: '/records/:id', name: 'Record Details', element: RecordDetails },
+  { path: '/education-levels', name: 'Education Levels', element: EducationLevels },
   { path: '/departments', name: 'Departments', element: Departments },
   { path: '/programs', name: 'Programs', element: Programs },
   { path: '/faqs', name: 'FAQs', element: Faqs },
@@ -38,6 +40,8 @@ const routes = [
   { path: '/reports/:id', name: 'Report Details', element: ReportDetails },
   { path: '/student-records', name: 'Student Records', element: Records },
   { path: '/records/:id', name: 'Record Details', element: RecordDetails },
+  { path: '/education-levels', name: 'Education Levels', element: Departments },
+  { path: '/education-levels', name: 'Education Levels', element: EducationLevels },
   { path: '/departments', name: 'Departments', element: Departments },
   { path: '/programs', name: 'Programs', element: Programs },
   { path: '/faqs', name: 'FAQs', element: Faqs },

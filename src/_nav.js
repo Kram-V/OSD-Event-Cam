@@ -13,6 +13,9 @@ import {
   cilBuilding,
   cilEducation,
   cilDescription,
+  cilSchool,
+  cilChartLine,
+  cilListNumbered,
 } from '@coreui/icons'
 import { CNavItem } from '@coreui/react'
 
@@ -21,7 +24,7 @@ const navAdmin = [
     component: CNavItem,
     name: 'Dashboard',
     to: '/dashboard',
-    icon: <CIcon icon={cilSpeedometer} customClassName="nav-icon" />,
+    icon: <CIcon icon={cilChartLine} customClassName="nav-icon" />,
   },
   {
     component: CNavItem,
@@ -40,6 +43,12 @@ const navAdmin = [
     name: 'Student Records',
     to: '/student-records',
     icon: <CIcon icon={cilNotes} customClassName="nav-icon" />,
+  },
+  {
+    component: CNavItem,
+    name: 'Education Levels',
+    to: '/education-levels',
+    icon: <CIcon icon={cilListNumbered} customClassName="nav-icon" />,
   },
   {
     component: CNavItem,
@@ -90,7 +99,7 @@ const nav = [
     component: CNavItem,
     name: 'Dashboard',
     to: '/dashboard',
-    icon: <CIcon icon={cilSpeedometer} customClassName="nav-icon" />,
+    icon: <CIcon icon={cilChartLine} customClassName="nav-icon" />,
   },
   {
     component: CNavItem,
@@ -103,6 +112,12 @@ const nav = [
     name: 'Student Records',
     to: '/student-records',
     icon: <CIcon icon={cilNotes} customClassName="nav-icon" />,
+  },
+  {
+    component: CNavItem,
+    name: 'Education Levels',
+    to: '/education-levels',
+    icon: <CIcon icon={cilListNumbered} customClassName="nav-icon" />,
   },
   {
     component: CNavItem,

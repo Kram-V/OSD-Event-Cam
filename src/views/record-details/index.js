@@ -42,9 +42,28 @@ const RecordDetails = () => {
                 </div>
                 <div className="d-flex gap-2">
                   <div style={{ fontWeight: 600 }} className="mb-2">
-                    Year & Section:
+                    Educational Level:
                   </div>
-                  <span>2nd Year / Computer Science</span>
+                  <span>College</span>
+                </div>
+                <div className="d-flex gap-2">
+                  <div style={{ fontWeight: 600 }} className="mb-2">
+                    Department:
+                  </div>
+                  <span>Engineering Department</span>
+                </div>
+                <div className="d-flex gap-2">
+                  <div style={{ fontWeight: 600 }} className="mb-2">
+                    Year & Course:
+                  </div>
+                  <span>First Year / BS Civil Engineering</span>
+                </div>
+
+                <div className="d-flex gap-2">
+                  <div style={{ fontWeight: 600 }} className="mb-2">
+                    Section:
+                  </div>
+                  <span>BSCE12</span>
                 </div>
               </div>
             </CCol>

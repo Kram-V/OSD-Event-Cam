@@ -25,7 +25,7 @@ import {
   cilArrowLeft,
   cilArrowRight,
   cilBuilding,
-  cilEducation,
+  cilListNumbered,
   cilPencil,
   cilPlus,
 } from '@coreui/icons'
@@ -33,15 +33,17 @@ import {
 import { createDepartment, getAllDepartments, updateDepartment } from '../../http/departments'
 
 import { Bounce, toast } from 'react-toastify'
-import { createProgram, getAllPrograms, updateProgram } from '../../http/programs'
 import BackdropLoader from '../../components/BackdropLoader'
+import {
+  createEducationLevel,
+  getAllEducationLevels,
+  updateEducationLevel,
+} from '../../http/education-levels'
 
-const Departments = () => {
-  const [programs, setPrograms] = useState([])
-  const [departments, setDepartments] = useState([])
-  const [programId, setProgramId] = useState(null)
+const EducationLevels = () => {
+  const [educationLevels, setEducationLevels] = useState([])
+  const [educationLevelId, setEducationLevelId] = useState(null)
   const [name, setName] = useState('')
-  const [department, setDepartment] = useState('')
   const [errors, setErrors] = useState(null)
 
   const [isModalOpen, setIsModalOpen] = useState(false)
@@ -51,12 +53,12 @@ const Departments = () => {
   const [isCreateLoading, setIsCreateLoading] = useState(false)
   const [isEditLoading, setIsEditLoading] = useState(false)
 
-  const handleCreateProgram = () => {
+  const handleCreateEducationLevel = () => {
     setIsCreateLoading(true)
 
-    createProgram({ department, name })
+    createEducationLevel({ name })
       .then((res) => {
-        toast.success('You have created program successfully', {
+        toast.success('You have created education level successfully', {
           position: 'top-right',
           autoClose: 4000,
           hideProgressBar: false,
@@ -68,7 +70,7 @@ const Departments = () => {
           transition: Bounce,
         })
 
-        getPrograms()
+        getEducationLevels()
         handleReset()
         setErrors(null)
       })
@@ -79,19 +81,18 @@ const Departments = () => {
       .finally(() => setIsCreateLoading(false))
   }
 
-  const handleEditProgram = (data) => {
+  const handleEditEducationLevel = (data) => {
     setName(data.name)
-    setProgramId(data.id)
-    setDepartment(data.department_id)
+    setEducationLevelId(data.id)
     setIsEditModalOpen(true)
   }
 
-  const handleUpdateDepartment = () => {
+  const handleUpdateEducationLevel = () => {
     setIsEditLoading(true)
 
-    updateProgram({ name, department }, programId)
+    updateEducationLevel({ name }, educationLevelId)
       .then((res) => {
-        toast.success('You have updated program successfully', {
+        toast.success('You have updated education level successfully', {
           position: 'top-right',
           autoClose: 4000,
           hideProgressBar: false,
@@ -103,7 +104,7 @@ const Departments = () => {
           transition: Bounce,
         })
 
-        getPrograms()
+        getEducationLevels()
         handleEditReset()
         setErrors(null)
       })
@@ -114,23 +115,15 @@ const Departments = () => {
       .finally(() => setIsEditLoading(false))
   }
 
-  const getPrograms = () => {
+  const getEducationLevels = () => {
     setIsLoading(true)
 
-    getAllPrograms()
+    getAllEducationLevels()
       .then((res) => {
-        setPrograms(res.data.programs)
+        setEducationLevels(res.data.education_levels)
       })
       .catch((e) => console.log(e))
       .finally(() => setIsLoading(false))
-  }
-
-  const getDepartments = () => {
-    getAllDepartments()
-      .then((res) => {
-        setDepartments(res.data.departments)
-      })
-      .catch((e) => console.log(e))
   }
 
   const handleReset = () => {
@@ -138,7 +131,6 @@ const Departments = () => {
       document.activeElement.blur()
     }
 
-    setDepartment('')
     setName('')
     setIsModalOpen(false)
     setErrors(null)
@@ -149,15 +141,14 @@ const Departments = () => {
       document.activeElement.blur()
     }
 
-    setDepartment('')
+    setEducationLevelId(null)
     setName('')
     setIsEditModalOpen(false)
     setErrors(null)
   }
 
   useEffect(() => {
-    getPrograms()
-    getDepartments()
+    getEducationLevels()
   }, [])
 
   return (
@@ -172,7 +163,7 @@ const Departments = () => {
             onClick={() => setIsModalOpen(true)}
           >
             <CIcon icon={cilPlus} className="me-1" />
-            Create Program
+            Create Education Level
           </CButton>
         </div>
       </div>
@@ -180,24 +171,22 @@ const Departments = () => {
       <CTable hover>
         <CTableHead>
           <CTableRow>
-            <CTableHeaderCell scope="col">Education Level</CTableHeaderCell>
-            <CTableHeaderCell scope="col">Department</CTableHeaderCell>
-            <CTableHeaderCell scope="col">Program</CTableHeaderCell>
-            {/* <CTableHeaderCell scope="col">Code</CTableHeaderCell>
-            <CTableHeaderCell scope="col">Description</CTableHeaderCell> */}
+            <CTableHeaderCell scope="col" style={{ width: '35%' }}>
+              #
+            </CTableHeaderCell>
+            <CTableHeaderCell scope="col" style={{ width: '50%' }}>
+              Education Level
+            </CTableHeaderCell>
             <CTableHeaderCell scope="col">Actions</CTableHeaderCell>
           </CTableRow>
         </CTableHead>
         <CTableBody>
-          {programs.length > 0 &&
+          {educationLevels.length > 0 &&
             !isLoading &&
-            programs.map((program, i) => (
+            educationLevels.map((educationLevel, i) => (
               <CTableRow key={i}>
-                <CTableDataCell>{program.department.education_level.name}</CTableDataCell>
-                <CTableDataCell>{program.department.name}</CTableDataCell>
-                <CTableDataCell>{program.name}</CTableDataCell>
-                {/* <CTableDataCell>{program.code ? program.code : 'N/A'}</CTableDataCell>
-              <CTableDataCell>{program.description ? program.description : 'N/A'}</CTableDataCell> */}
+                <CTableDataCell>{i + 1}</CTableDataCell>
+                <CTableDataCell>{educationLevel.name}</CTableDataCell>
                 <CTableDataCell>
                   <CTooltip content="Edit" placement="top">
                     <CIcon
@@ -205,7 +194,7 @@ const Departments = () => {
                       className="me-2 text-secondary"
                       role="button"
                       title="Edit"
-                      onClick={() => handleEditProgram(program)}
+                      onClick={() => handleEditEducationLevel(educationLevel)}
                     />
                   </CTooltip>
                 </CTableDataCell>
@@ -223,7 +212,7 @@ const Departments = () => {
           </CTableBody>
         )}
 
-        {programs.length === 0 && !isLoading && (
+        {educationLevels.length === 0 && !isLoading && (
           <CTableBody>
             <CTableRow>
               <CTableDataCell colSpan={8} className="text-center">
@@ -280,34 +269,16 @@ const Departments = () => {
         aria-labelledby="VerticallyCenteredScrollableExample2"
       >
         <CModalHeader>
-          <CModalTitle id="VerticallyCenteredScrollableExample2">Create Program</CModalTitle>
+          <CModalTitle id="VerticallyCenteredScrollableExample2">
+            Create Education Level
+          </CModalTitle>
         </CModalHeader>
         <CModalBody>
           <CForm>
             <div className="mb-3">
               <CInputGroup>
                 <CInputGroupText>
-                  <CIcon icon={cilBuilding} />
-                </CInputGroupText>
-                <CFormSelect value={department} onChange={(e) => setDepartment(e.target.value)}>
-                  <option value="">Select Department</option>
-                  {departments.map((department) => (
-                    <option key={department.id} value={department.id}>
-                      {department.name}
-                    </option>
-                  ))}
-                </CFormSelect>
-              </CInputGroup>
-
-              <div style={{ color: 'red', fontSize: '14px' }}>
-                {errors && errors['department'] && errors['department'][0]}
-              </div>
-            </div>
-
-            <div className="mb-3">
-              <CInputGroup>
-                <CInputGroupText>
-                  <CIcon icon={cilEducation} />
+                  <CIcon icon={cilListNumbered} />
                 </CInputGroupText>
                 <CFormInput
                   placeholder="Name"
@@ -326,7 +297,7 @@ const Departments = () => {
           <CButton disabled={isCreateLoading} color="secondary" onClick={handleReset}>
             Close
           </CButton>
-          <CButton disabled={isCreateLoading} onClick={handleCreateProgram} color="primary">
+          <CButton disabled={isCreateLoading} onClick={handleCreateEducationLevel} color="primary">
             {isCreateLoading ? <CSpinner style={{ width: '20px', height: '20px' }} /> : 'Create'}
           </CButton>
         </CModalFooter>
@@ -342,7 +313,7 @@ const Departments = () => {
         aria-labelledby="VerticallyCenteredScrollableExample2"
       >
         <CModalHeader>
-          <CModalTitle id="VerticallyCenteredScrollableExample2">Edit Program</CModalTitle>
+          <CModalTitle id="VerticallyCenteredScrollableExample2">Edit Education Level</CModalTitle>
         </CModalHeader>
         <CModalBody>
           <CForm>
@@ -350,26 +321,6 @@ const Departments = () => {
               <CInputGroup>
                 <CInputGroupText>
                   <CIcon icon={cilBuilding} />
-                </CInputGroupText>
-                <CFormSelect value={department} onChange={(e) => setDepartment(e.target.value)}>
-                  <option value="">Select Department</option>
-                  {departments.map((department) => (
-                    <option key={department.id} value={department.id}>
-                      {department.name}
-                    </option>
-                  ))}
-                </CFormSelect>
-              </CInputGroup>
-
-              <div style={{ color: 'red', fontSize: '14px' }}>
-                {errors && errors['department'] && errors['department'][0]}
-              </div>
-            </div>
-
-            <div className="mb-3">
-              <CInputGroup>
-                <CInputGroupText>
-                  <CIcon icon={cilEducation} />
                 </CInputGroupText>
                 <CFormInput
                   placeholder="Name"
@@ -388,7 +339,7 @@ const Departments = () => {
           <CButton disabled={isEditLoading} color="secondary" onClick={handleEditReset}>
             Close
           </CButton>
-          <CButton disabled={isEditLoading} onClick={handleUpdateDepartment} color="primary">
+          <CButton disabled={isEditLoading} onClick={handleUpdateEducationLevel} color="primary">
             {isEditLoading ? <CSpinner style={{ width: '20px', height: '20px' }} /> : 'Update'}
           </CButton>
         </CModalFooter>
@@ -397,4 +348,4 @@ const Departments = () => {
   )
 }
 
-export default Departments
+export default EducationLevels

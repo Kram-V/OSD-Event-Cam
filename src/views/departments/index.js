@@ -26,6 +26,7 @@ import {
   cilArrowRight,
   cilBuilding,
   cilFilter,
+  cilListNumbered,
   cilPencil,
   cilPlus,
   cilUser,
@@ -35,10 +36,13 @@ import { createDepartment, getAllDepartments, updateDepartment } from '../../htt
 
 import { Bounce, toast } from 'react-toastify'
 import BackdropLoader from '../../components/BackdropLoader'
+import { getAllEducationLevels } from '../../http/education-levels'
 
 const Departments = () => {
   const [departments, setDepartments] = useState([])
   const [departmentId, setDepartmentId] = useState(null)
+  const [educationLevels, setEducationLevels] = useState([])
+  const [educationLevel, setEducationLevel] = useState(null)
   const [name, setName] = useState('')
   const [errors, setErrors] = useState(null)
 
@@ -52,7 +56,7 @@ const Departments = () => {
   const handleCreateDepartment = () => {
     setIsCreateLoading(true)
 
-    createDepartment({ name })
+    createDepartment({ education_level: educationLevel, name })
       .then((res) => {
         toast.success('You have created department successfully', {
           position: 'top-right',
@@ -80,13 +84,14 @@ const Departments = () => {
   const handleEditDepartment = (data) => {
     setName(data.name)
     setDepartmentId(data.id)
+    setEducationLevel(data.education_level.id)
     setIsEditModalOpen(true)
   }
 
   const handleUpdateDepartment = () => {
     setIsEditLoading(true)
 
-    updateDepartment({ name }, departmentId)
+    updateDepartment({ education_level: educationLevel, name }, departmentId)
       .then((res) => {
         toast.success('You have updated department successfully', {
           position: 'top-right',
@@ -122,11 +127,18 @@ const Departments = () => {
       .finally(() => setIsLoading(false))
   }
 
+  const getEducationLevels = () => {
+    getAllEducationLevels()
+      .then((res) => setEducationLevels(res.data.education_levels))
+      .catch((e) => console.log(e))
+  }
+
   const handleReset = () => {
     if (document.activeElement instanceof HTMLElement) {
       document.activeElement.blur()
     }
 
+    setEducationLevel(null)
     setName('')
     setIsModalOpen(false)
     setErrors(null)
@@ -137,7 +149,7 @@ const Departments = () => {
       document.activeElement.blur()
     }
 
-    setDepartmentId(null)
+    setEducationLevel(null)
     setName('')
     setIsEditModalOpen(false)
     setErrors(null)
@@ -145,6 +157,7 @@ const Departments = () => {
 
   useEffect(() => {
     getDepartments()
+    getEducationLevels()
   }, [])
 
   return (
@@ -167,11 +180,11 @@ const Departments = () => {
       <CTable hover>
         <CTableHead>
           <CTableRow>
-            <CTableHeaderCell scope="col" style={{ width: '35%' }}>
-              #
+            <CTableHeaderCell scope="col" style={{ width: '50%' }}>
+              Education Level
             </CTableHeaderCell>
             <CTableHeaderCell scope="col" style={{ width: '50%' }}>
-              Department Name
+              Department
             </CTableHeaderCell>
             <CTableHeaderCell scope="col">Actions</CTableHeaderCell>
           </CTableRow>
@@ -181,7 +194,7 @@ const Departments = () => {
             !isLoading &&
             departments.map((department, i) => (
               <CTableRow key={i}>
-                <CTableDataCell>{i + 1}</CTableDataCell>
+                <CTableDataCell>{department.education_level.name}</CTableDataCell>
                 <CTableDataCell>{department.name}</CTableDataCell>
                 <CTableDataCell>
                   <CTooltip content="Edit" placement="top">
@@ -272,6 +285,29 @@ const Departments = () => {
             <div className="mb-3">
               <CInputGroup>
                 <CInputGroupText>
+                  <CIcon icon={cilListNumbered} />
+                </CInputGroupText>
+                <CFormSelect
+                  value={educationLevel}
+                  onChange={(e) => setEducationLevel(e.target.value)}
+                >
+                  <option value="">Select Education Level</option>
+                  {educationLevels.map((educatinLevel) => (
+                    <option key={educatinLevel.id} value={educatinLevel.id}>
+                      {educatinLevel.name}
+                    </option>
+                  ))}
+                </CFormSelect>
+              </CInputGroup>
+
+              <div style={{ color: 'red', fontSize: '14px' }}>
+                {errors && errors['education_level'] && errors['education_level'][0]}
+              </div>
+            </div>
+
+            <div className="mb-3">
+              <CInputGroup>
+                <CInputGroupText>
                   <CIcon icon={cilBuilding} />
                 </CInputGroupText>
                 <CFormInput
@@ -311,6 +347,29 @@ const Departments = () => {
         </CModalHeader>
         <CModalBody>
           <CForm>
+            <div className="mb-3">
+              <CInputGroup>
+                <CInputGroupText>
+                  <CIcon icon={cilListNumbered} />
+                </CInputGroupText>
+                <CFormSelect
+                  value={educationLevel}
+                  onChange={(e) => setEducationLevel(e.target.value)}
+                >
+                  <option value="">Select Education Level</option>
+                  {educationLevels.map((educationLevel) => (
+                    <option key={educationLevel.id} value={educationLevel.id}>
+                      {educationLevel.name}
+                    </option>
+                  ))}
+                </CFormSelect>
+              </CInputGroup>
+
+              <div style={{ color: 'red', fontSize: '14px' }}>
+                {errors && errors['education_level'] && errors['education_level'][0]}
+              </div>
+            </div>
+
             <div className="mb-3">
               <CInputGroup>
                 <CInputGroupText>

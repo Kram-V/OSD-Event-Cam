@@ -158,6 +158,12 @@ const ReportDetails = () => {
                   </div>
                   <div className="d-flex gap-2">
                     <div style={{ fontWeight: 600 }} className="mb-2">
+                      Education Level:
+                    </div>
+                    <span>{report?.education_level?.name}</span>
+                  </div>
+                  <div className="d-flex gap-2">
+                    <div style={{ fontWeight: 600 }} className="mb-2">
                       Department:
                     </div>
                     <span>{report?.department?.name}</span>

@@ -33,24 +33,36 @@ import BackdropLoader from '../../components/BackdropLoader'
 import { formatDate, formatTime } from '../../helper'
 
 import { Bounce, toast } from 'react-toastify'
+import { getAllEducationLevels } from '../../http/education-levels'
 
 const Reports = () => {
   const [isLoading, setIsLoading] = useState(false)
   const [reports, setReports] = useState([])
   const [reportId, setReportId] = useState(null)
 
+  const [educationLevels, setEducationLevels] = useState([])
+  const [educationLevelId, setEducationLevelId] = useState(null)
+
   const [isMarkAsResolvedModal, setIsMarkAsResolvedModal] = useState(false)
   const [isMarkAsResolvedLoading, setIsMarkAsResolvedLoading] = useState(false)
 
-  const getReports = () => {
+  const getReports = (id) => {
     setIsLoading(true)
 
-    getAllReports()
+    getAllReports({ educational_id: id })
       .then((res) => {
         setReports(res.data.reports)
       })
       .catch((e) => console.log(e))
       .finally(() => setIsLoading(false))
+  }
+
+  const getEducationLevels = () => {
+    getAllEducationLevels()
+      .then((res) => {
+        setEducationLevels(res.data.education_levels)
+      })
+      .catch((e) => console.log(e))
   }
 
   const openMarkAsResolvedModal = (id) => {
@@ -85,7 +97,14 @@ const Reports = () => {
 
   useEffect(() => {
     getReports()
+    getEducationLevels()
   }, [])
+
+  useEffect(() => {
+    if (educationLevelId) {
+      getReports(educationLevelId)
+    }
+  }, [educationLevelId])
 
   return (
     <div>
@@ -100,8 +119,8 @@ const Reports = () => {
             <option value="Violation Type 3">Violation Type 3</option>
           </CFormSelect>
 
-          <CFormInput style={{ width: '200px' }} type="date" />
-          <CFormInput style={{ width: '200px' }} type="date" />
+          {/* <CFormInput style={{ width: '200px' }} type="date" />
+          <CFormInput style={{ width: '200px' }} type="date" /> */}
 
           <CFormSelect style={{ width: '200px' }}>
             <option>Select Status Type</option>
@@ -109,14 +128,27 @@ const Reports = () => {
             <option value="resolved">Resolved</option>
           </CFormSelect>
 
-          <CButton
+          <CFormSelect
+            style={{ width: '210px' }}
+            value={educationLevelId}
+            onChange={(e) => setEducationLevelId(e.target.value)}
+          >
+            <option value="all">Select Education Level</option>
+            {educationLevels.map((level) => (
+              <option key={level.id} value={level.id}>
+                {level.name}
+              </option>
+            ))}
+          </CFormSelect>
+
+          {/* <CButton
             className="d-flex align-items-center"
             color="primary"
             onClick={() => setIsOpenModal(true)}
           >
             <CIcon icon={cilFilter} className="me-1" />
             Filter
-          </CButton>
+          </CButton> */}
         </div>
       </div>
 
@@ -126,7 +158,7 @@ const Reports = () => {
             <CTableHeaderCell scope="col">Student ID</CTableHeaderCell>
             <CTableHeaderCell scope="col">Student Name</CTableHeaderCell>
             <CTableHeaderCell scope="col"> Violation Type</CTableHeaderCell>
-            <CTableHeaderCell scope="col">Date Created</CTableHeaderCell>
+            <CTableHeaderCell scope="col">Education Level</CTableHeaderCell>
             <CTableHeaderCell scope="col">Time</CTableHeaderCell>
             <CTableHeaderCell scope="col">Status</CTableHeaderCell>
             <CTableHeaderCell scope="col">Actions</CTableHeaderCell>
@@ -142,7 +174,7 @@ const Reports = () => {
                   <CTableDataCell>{report.student_id}</CTableDataCell>
                   <CTableDataCell>{report.student_name}</CTableDataCell>
                   <CTableDataCell>{report.violation_name}</CTableDataCell>
-                  <CTableDataCell>{formatDate(report.created_at)}</CTableDataCell>
+                  <CTableDataCell>{report.education_level.name}</CTableDataCell>
                   <CTableDataCell>{formatTime(report.time)}</CTableDataCell>
                   <CTableDataCell>
                     <CBadge color={report.status === 'pending' ? 'warning' : 'success'}>

@@ -79,9 +79,12 @@ const ArchivedReports = () => {
             </CTableDataCell>
             <CTableDataCell>
               <CTooltip content="View Details" placement="top">
-                <Link to="/reports/1" className="text-secondary">
-                  <CIcon icon={cilSearch} className="me-2" role="button" title="View" />
-                </Link>
+                <CIcon
+                  icon={cilSearch}
+                  className="me-2 text-secondary"
+                  role="button"
+                  title="View"
+                />
               </CTooltip>
               <CTooltip content="Edit" placement="top">
                 <CIcon
@@ -104,9 +107,12 @@ const ArchivedReports = () => {
             </CTableDataCell>
             <CTableDataCell>
               <CTooltip content="View Details" placement="top">
-                <Link to="/reports/1" className="text-secondary">
-                  <CIcon icon={cilSearch} className="me-2" role="button" title="View" />
-                </Link>
+                <CIcon
+                  icon={cilSearch}
+                  className="me-2 text-secondary"
+                  role="button"
+                  title="View"
+                />
               </CTooltip>
               <CTooltip content="Edit" placement="top">
                 <CIcon

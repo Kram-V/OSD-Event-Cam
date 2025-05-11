@@ -33,14 +33,14 @@ const Records = () => {
           <CFormSelect style={{ width: '200px' }}>
             <option>Select Year</option>
             <option value="">1st Year</option>
-            <option value="">2nd Year</option>
+            <option value="">First Year</option>
             <option value="">3rd Year</option>
             <option value="">4th Year</option>
           </CFormSelect>
 
           <CFormSelect style={{ width: '200px' }}>
             <option>Select Course</option>
-            <option value="">Computer Science</option>
+            <option value="">BS Civil Engineering</option>
             <option value="">Information Technology</option>
             <option value="">Tourism</option>
           </CFormSelect>
@@ -70,8 +70,8 @@ const Records = () => {
           <CTableRow>
             <CTableDataCell>1111111</CTableDataCell>
             <CTableDataCell>John Doe</CTableDataCell>
-            <CTableDataCell>2nd Year</CTableDataCell>
-            <CTableDataCell>Computer Science</CTableDataCell>
+            <CTableDataCell>First Year</CTableDataCell>
+            <CTableDataCell>BS Civil Engineering</CTableDataCell>
             <CTableDataCell>
               <CTooltip content="View Details" placement="top">
                 <Link to="/records/1" className="text-secondary">
@@ -83,8 +83,8 @@ const Records = () => {
           <CTableRow>
             <CTableDataCell>1111111</CTableDataCell>
             <CTableDataCell>John Doe</CTableDataCell>
-            <CTableDataCell>2nd Year</CTableDataCell>
-            <CTableDataCell>Computer Science</CTableDataCell>
+            <CTableDataCell>First Year</CTableDataCell>
+            <CTableDataCell>BS Civil Engineering</CTableDataCell>
             <CTableDataCell>
               <CTooltip content="View Details" placement="top">
                 <Link to="/records/1" className="text-secondary">
@@ -96,8 +96,8 @@ const Records = () => {
           <CTableRow>
             <CTableDataCell>1111111</CTableDataCell>
             <CTableDataCell>John Doe</CTableDataCell>
-            <CTableDataCell>2nd Year</CTableDataCell>
-            <CTableDataCell>Computer Science</CTableDataCell>
+            <CTableDataCell>First Year</CTableDataCell>
+            <CTableDataCell>BS Civil Engineering</CTableDataCell>
             <CTableDataCell>
               <CTooltip content="View Details" placement="top">
                 <Link to="/records/1" className="text-secondary">
