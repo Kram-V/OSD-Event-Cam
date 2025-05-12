@@ -37,7 +37,7 @@ const activeTabStyle = {
   fontWeight: 700,
 }
 
-const ReportDetails = () => {
+const IntegratedReportDetails = () => {
   const [activeTab, setActiveTab] = useState(1)
 
   const [report, setReport] = useState(null)
@@ -340,7 +340,7 @@ const ReportDetails = () => {
         </div>
       </CCard>
 
-      <Link to="/college-reports" className="text-decoration-none">
+      <Link to="/integrated-school-reports" className="text-decoration-none">
         <CButton className="d-flex align-items-center" color="primary" variant="outline">
           <CIcon icon={cilArrowLeft} className="me-1" />
           Go to reports page
@@ -352,4 +352,4 @@ const ReportDetails = () => {
   )
 }
 
-export default ReportDetails
+export default IntegratedReportDetails

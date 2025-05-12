@@ -30,12 +30,10 @@ import {
 import { Link } from 'react-router-dom'
 import { getAllReports, markAsResolved } from '../../http/reports'
 import BackdropLoader from '../../components/BackdropLoader'
-import { formatDate, formatTime } from '../../helper'
 
 import { Bounce, toast } from 'react-toastify'
-import { getAllEducationLevels } from '../../http/education-levels'
 
-const Reports = () => {
+const IntegratedSchoolReports = () => {
   const [isLoading, setIsLoading] = useState(false)
   const [reports, setReports] = useState([])
   const [reportId, setReportId] = useState(null)
@@ -46,7 +44,7 @@ const Reports = () => {
   const getReports = () => {
     setIsLoading(true)
 
-    getAllReports({ educational_level: 'College' })
+    getAllReports({ educational_level: 'Integrated School' })
       .then((res) => {
         setReports(res.data.reports)
       })
@@ -152,7 +150,10 @@ const Reports = () => {
                   </CTableDataCell>
                   <CTableDataCell>
                     <CTooltip content="View Details" placement="top">
-                      <Link to={`/college-reports/${report.id}`} className="text-secondary">
+                      <Link
+                        to={`/integrated-school-reports/${report.id}`}
+                        className="text-secondary"
+                      >
                         <CIcon icon={cilSearch} className="me-2" role="button" title="View" />
                       </Link>
                     </CTooltip>
@@ -274,4 +275,4 @@ const Reports = () => {
   )
 }
 
-export default Reports
+export default IntegratedSchoolReports

@@ -28,8 +28,14 @@ const navAdmin = [
   },
   {
     component: CNavItem,
-    name: 'Reports',
-    to: '/reports',
+    name: 'College Reports',
+    to: '/college-reports',
+    icon: <CIcon icon={cilFile} customClassName="nav-icon" />,
+  },
+  {
+    component: CNavItem,
+    name: 'IS Reports',
+    to: '/integrated-school-reports',
     icon: <CIcon icon={cilFile} customClassName="nav-icon" />,
   },
   {
@@ -97,8 +103,14 @@ const nav = [
   },
   {
     component: CNavItem,
-    name: 'Reports',
-    to: '/reports',
+    name: 'College Reports',
+    to: '/college-reports',
+    icon: <CIcon icon={cilFile} customClassName="nav-icon" />,
+  },
+  {
+    component: CNavItem,
+    name: 'IS Reports',
+    to: '/integrated-school-reports',
     icon: <CIcon icon={cilFile} customClassName="nav-icon" />,
   },
   {

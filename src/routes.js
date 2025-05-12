@@ -7,6 +7,8 @@ import Programs from './views/programs'
 import Faqs from './views/faqs'
 import UserInstructions from './views/user-instructions'
 import EducationLevels from './views/education-levels'
+import IntegratedSchoolReports from './views/is-reports'
+import IntegratedReportDetails from './views/is-report-details'
 
 const Dashboard = React.lazy(() => import('./views/dashboard/Dashboard'))
 const Reports = React.lazy(() => import('./views/reports'))
@@ -18,8 +20,10 @@ const Help = React.lazy(() => import('./views/help'))
 const adminRoutes = [
   { path: '/', exact: true, name: 'Home' },
   { path: '/dashboard', name: 'Dashboard', element: Dashboard },
-  { path: '/reports', name: 'Reports', element: Reports },
-  { path: '/reports/:id', name: 'Report Details', element: ReportDetails },
+  { path: '/college-reports', name: 'Reports', element: Reports },
+  { path: '/college-reports/:id', name: 'Report Details', element: ReportDetails },
+  { path: '/integrated-school-reports', name: 'Reports', element: IntegratedSchoolReports },
+  { path: '/integrated-school-reports/:id', name: 'Reports', element: IntegratedReportDetails },
   { path: '/archived-reports', name: 'Archived Reports', element: ArchivedReports },
   { path: '/student-records', name: 'Student Records', element: Records },
   { path: '/records/:id', name: 'Record Details', element: RecordDetails },
@@ -35,8 +39,10 @@ const adminRoutes = [
 const routes = [
   { path: '/', exact: true, name: 'Home' },
   { path: '/dashboard', name: 'Dashboard', element: Dashboard },
-  { path: '/reports', name: 'Reports', element: Reports },
-  { path: '/reports/:id', name: 'Report Details', element: ReportDetails },
+  { path: '/college-reports', name: 'Reports', element: Reports },
+  { path: '/college-reports/:id', name: 'Report Details', element: ReportDetails },
+  { path: '/integrated-school-reports', name: 'Reports', element: IntegratedSchoolReports },
+  { path: '/integrated-school-reports/:id', name: 'Reports', element: IntegratedReportDetails },
   { path: '/student-records', name: 'Student Records', element: Records },
   { path: '/records/:id', name: 'Record Details', element: RecordDetails },
   { path: '/departments', name: 'Departments', element: Departments },
