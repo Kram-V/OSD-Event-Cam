@@ -19,6 +19,8 @@ const WidgetsDropdown = (props) => {
   const [totalAdminUsers, setTotalAdminUsers] = useState(0)
   const [totalNonAdminUsers, setTotalNonAdminUsers] = useState(0)
   const [totalReports, setTotalReports] = useState(0)
+  const [totalResolvedReports, setTotalResolvedReports] = useState(0)
+  const [totalPendingReports, setTotalPendingReports] = useState(0)
 
   const [isLoading, setIsLoading] = useState(false)
 
@@ -30,6 +32,10 @@ const WidgetsDropdown = (props) => {
         setTotalAdminUsers(res.data.total_admin_users)
         setTotalNonAdminUsers(res.data.total_non_admin_users)
         setTotalReports(res.data.total_reports)
+        setTotalResolvedReports(res.data.total_resolved_reports)
+        setTotalPendingReports(res.data.total_pending_reports)
+
+        console.log('RES: ', res.data)
       })
       .catch((e) => console.log(e))
       .finally(() => setIsLoading(false))
@@ -77,7 +83,7 @@ const WidgetsDropdown = (props) => {
             </ContentLoader>
           ) : (
             <Card
-              total={0}
+              total={totalPendingReports}
               subText="Total Pending Reports"
               icon={<CIcon icon={cilHistory} size="xl" />}
               bgColor="bg-warning"
@@ -96,7 +102,7 @@ const WidgetsDropdown = (props) => {
             </ContentLoader>
           ) : (
             <Card
-              total={0}
+              total={totalResolvedReports}
               subText="Total Resolved Reports"
               icon={<CIcon icon={cilCheckCircle} size="xl" />}
               bgColor="bg-success"
